@@ -100,6 +100,22 @@ h2{ margin:0 0 10px; }
   padding:18px;
   box-shadow: var(--shadow);
 }
+/* Use banner as background on hero-card when available */
+.hero-card.hero-with-banner{
+  background-image: url("../images/banner.png");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  color: var(--text);
+}
+
+/* Screen-reader only utility */
+.sr-only{ 
+  position: absolute !important; 
+  width: 1px; height: 1px; 
+  padding: 0; margin: -1px; overflow: hidden; 
+  clip: rect(0,0,0,0); white-space: nowrap; border: 0;
+}
 .hero-card-title{
   color:var(--brand);
   font-weight:900;
