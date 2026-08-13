@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 400" preserveAspectRatio="xMidYMid slice">
+  <defs>
+    <linearGradient id="g" x1="0" x2="1">
+      <stop offset="0%" stop-color="#4f46e5" />
+      <stop offset="100%" stop-color="#6ee7ff" />
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="400" fill="url(#g)" />
+  <g fill="#07101a" font-family="sans-serif" font-weight="700">
+    <text x="60" y="140" font-size="48">Ridgefield Academy</text>
+    <text x="60" y="200" font-size="24">Learning from the heart — personalised attention</text>
+  </g>
+</svg>
