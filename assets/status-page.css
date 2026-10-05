@@ -1,0 +1,44 @@
+
+/* Ridgefield Status Page - Glassmorphic UI */
+.rf-status-shell{
+  max-width:860px;
+  margin:auto;
+  padding:56px 20px 100px;
+}
+.rf-status-card{
+  background:
+    linear-gradient(180deg,rgba(255,255,255,.88),rgba(255,255,255,.70)),
+    rgba(255,255,255,.80);
+  -webkit-backdrop-filter:blur(24px) saturate(165%);
+  backdrop-filter:blur(24px) saturate(165%);
+  border:1px solid rgba(255,255,255,.8);
+  border-radius:28px;
+  padding:32px;
+  margin:20px 0;
+  box-shadow:0 20px 55px -10px rgba(23,32,29,.09), inset 0 1px 0 #fff;
+  transition:box-shadow .3s ease;
+}
+.rf-status-card:hover{
+  box-shadow:0 28px 70px -12px rgba(23,32,29,.14), inset 0 1px 0 #fff;
+}
+.rf-status-dot{
+  display:inline-block;
+  width:12px;
+  height:12px;
+  border-radius:50%;
+  background:#2e844b;
+  box-shadow:0 0 10px rgba(46,132,75,.6);
+  margin-right:8px;
+  vertical-align:middle;
+}
+.rf-status-grid{
+  display:grid;
+  grid-template-columns:200px 1fr;
+  gap:14px;
+  padding:12px 0;
+  border-bottom:1px solid rgba(23,32,29,.08);
+}
+@media(max-width:640px){
+  .rf-status-grid{grid-template-columns:1fr;gap:4px}
+  .rf-status-card{padding:22px}
+}

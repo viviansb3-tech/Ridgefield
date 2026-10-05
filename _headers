@@ -1,0 +1,53 @@
+/*
+  X-Frame-Options: DENY
+  X-Content-Type-Options: nosniff
+  Referrer-Policy: strict-origin-when-cross-origin
+  Permissions-Policy: camera=(), microphone=(), geolocation=(), payment=(), usb=()
+  Strict-Transport-Security: max-age=31536000
+  Cross-Origin-Opener-Policy: same-origin
+  Content-Security-Policy: default-src 'self'; base-uri 'self'; object-src 'none'; frame-ancestors 'self'; form-action 'self'; script-src 'self'; style-src 'self'; img-src 'self' data: https:; font-src 'self' data:; connect-src 'self'; upgrade-insecure-requests
+
+# Static media assets (immutable)
+/assets/images/*
+  Cache-Control: public, max-age=2592000, immutable
+
+/assets/logos/*
+  Cache-Control: public, max-age=2592000, immutable
+
+/assets/*.png
+  Cache-Control: public, max-age=2592000, immutable
+
+/assets/*.svg
+  Cache-Control: public, max-age=2592000, immutable
+
+# Mutable stylesheets and scripts (revalidate immediately so updates propagate)
+/assets/*.css
+  Cache-Control: public, max-age=0, must-revalidate
+
+/assets/*.js
+  Cache-Control: public, max-age=0, must-revalidate
+
+/assets/*
+  Cache-Control: public, max-age=86400, stale-while-revalidate=604800
+
+/data/search-index.json
+  Cache-Control: public, max-age=3600
+
+/health.json
+  Cache-Control: no-store
+  X-Robots-Tag: noindex, nofollow
+
+/status.html
+  Cache-Control: no-store
+  X-Robots-Tag: noindex, nofollow
+
+/application-success.html
+  Cache-Control: no-store
+  X-Robots-Tag: noindex, nofollow
+
+/enquiry-success.html
+  Cache-Control: no-store
+  X-Robots-Tag: noindex, nofollow
+
+/netlify-forms.html
+  X-Robots-Tag: noindex, nofollow

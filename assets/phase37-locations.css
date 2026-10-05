@@ -1,0 +1,11 @@
+
+.rf37-location{margin-top:25px;padding:18px 20px;border-radius:15px;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.14)}
+.rf37-location .label{display:block;font-size:.875rem;letter-spacing:.17em;text-transform:uppercase;opacity:.62;margin-bottom:6px}
+.rf37-location strong{font-size:1.05rem}
+.rf37-addresses{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:32px}
+.rf37-address{padding:22px;border-radius:18px;background:#fff;border:1px solid rgba(23,32,29,.1);color:#17201d}
+.rf37-address h4{margin:0 0 9px;font-size:1.15rem}
+.rf37-address p{margin:0;line-height:1.6;opacity:.75}
+.rf37-address.cambridge{border-top:4px solid #a58b54}
+.rf37-address.shared{border-top:4px solid #17201d}
+@media(max-width:800px){.rf37-addresses{grid-template-columns:1fr}}

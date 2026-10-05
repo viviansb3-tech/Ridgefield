@@ -1,0 +1,192 @@
+
+/* Ridgefield Phase 36 Programmes - Glassmorphic UI */
+.rf36-programmes{
+  background:
+    radial-gradient(circle at 85% 20%, rgba(197,160,89,.18), transparent 45%),
+    linear-gradient(135deg,#0c1a16,#15332a);
+  color:#fff;
+  position:relative;
+  overflow:hidden;
+}
+.rf36-programmes:before{
+  content:"";
+  position:absolute;
+  width:60vw;
+  height:60vw;
+  border-radius:50%;
+  right:-20vw;
+  top:-20vw;
+  background:radial-gradient(circle,rgba(197,160,89,.18),transparent 70%);
+  pointer-events:none;
+}
+.rf36-inner{
+  max-width:1240px;
+  margin:auto;
+  padding:90px 24px;
+  position:relative;
+  z-index:2;
+}
+.rf36-kicker{
+  font-size:.875rem;
+  font-weight:800;
+  letter-spacing:.2em;
+  text-transform:uppercase;
+  color:var(--rf-gold,#c5a059);
+}
+.rf36-title{
+  font-size:clamp(2.4rem,5.2vw,5.4rem);
+  line-height:.96;
+  margin:15px 0 22px;
+  max-width:900px;
+  text-wrap:balance;
+}
+.rf36-intro{
+  font-size:1.15rem;
+  line-height:1.75;
+  max-width:800px;
+  opacity:.86;
+  text-wrap:pretty;
+}
+.rf36-warning{
+  margin:28px 0;
+  padding:20px 24px;
+  border:1px solid rgba(255,255,255,.22);
+  border-radius:20px;
+  background:rgba(255,255,255,.08);
+  -webkit-backdrop-filter:blur(16px);
+  backdrop-filter:blur(16px);
+  box-shadow:0 12px 30px rgba(0,0,0,.2), inset 0 1px 0 rgba(255,255,255,.2);
+}
+.rf36-warning strong{display:block;margin-bottom:6px;color:#dfc17b}
+.rf36-grid{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:22px;
+  margin-top:40px;
+}
+.rf36-card{
+  display:flex;
+  flex-direction:column;
+  padding:32px;
+  border:1px solid rgba(255,255,255,.18);
+  border-radius:26px;
+  background:
+    linear-gradient(180deg,rgba(255,255,255,.12),rgba(255,255,255,.04)),
+    rgba(255,255,255,.06);
+  -webkit-backdrop-filter:blur(22px) saturate(160%);
+  backdrop-filter:blur(22px) saturate(160%);
+  min-height:360px;
+  transition:all .35s var(--rf-ease,cubic-bezier(.2,.8,.2,1));
+  cursor:pointer;
+  box-shadow:0 16px 40px rgba(0,0,0,.25), inset 0 1px 0 rgba(255,255,255,.22);
+}
+.rf36-card:hover,.rf36-card.selected{
+  transform:translateY(-8px);
+  background:
+    linear-gradient(180deg,rgba(255,255,255,.22),rgba(255,255,255,.08)),
+    rgba(255,255,255,.12);
+  border-color:rgba(197,160,89,.75);
+  box-shadow:0 28px 70px rgba(0,0,0,.35), 0 0 30px rgba(197,160,89,.25), inset 0 1px 0 rgba(255,255,255,.35);
+}
+.rf36-card .tag{
+  font-size:.875rem;
+  letter-spacing:.16em;
+  text-transform:uppercase;
+  font-weight:800;
+  color:var(--rf-gold,#dfc17b);
+  background:rgba(197,160,89,.18);
+  padding:4px 12px;
+  border-radius:999px;
+  border:1px solid rgba(197,160,89,.35);
+  align-self:flex-start;
+}
+.rf36-card h3{font-size:1.9rem;margin:16px 0 10px}
+.rf36-card p{line-height:1.7;opacity:.82}
+.rf36-list{padding-left:18px;line-height:1.8;opacity:.82}
+.rf36-card .cta{
+  margin-top:auto;
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  text-decoration:none;
+  color:#fff;
+  border:1px solid rgba(255,255,255,.35);
+  padding:12px 20px;
+  border-radius:999px;
+  text-align:center;
+  font-weight:760;
+  background:rgba(255,255,255,.12);
+  -webkit-backdrop-filter:blur(10px);
+  backdrop-filter:blur(10px);
+  transition:all .2s ease;
+}
+.rf36-card:hover .cta,.rf36-card.selected .cta{
+  background:#fff;
+  color:#0c1a16;
+  border-color:#fff;
+  box-shadow:0 8px 22px rgba(0,0,0,.2);
+}
+.rf36-enrol{
+  margin-top:48px;
+  padding:36px;
+  border-radius:28px;
+  background:
+    linear-gradient(180deg,rgba(255,255,255,.94),rgba(245,244,239,.82)),
+    rgba(255,255,255,.9);
+  -webkit-backdrop-filter:blur(24px) saturate(160%);
+  backdrop-filter:blur(24px) saturate(160%);
+  color:#17201d;
+  box-shadow:0 24px 60px rgba(0,0,0,.2), inset 0 1px 0 #fff;
+  border:1px solid rgba(255,255,255,.8);
+}
+.rf36-enrol h3{font-size:1.85rem;margin-top:0}
+.rf36-enrol p{line-height:1.7}
+.rf36-enrol .steps{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:16px;
+  margin-top:24px;
+}
+.rf36-enrol .step{
+  padding:22px;
+  background:rgba(255,255,255,.85);
+  border-radius:18px;
+  border:1px solid rgba(23,32,29,.10);
+  box-shadow:0 8px 24px rgba(23,32,29,.04), inset 0 1px 0 #fff;
+}
+.rf36-enrol .step b{display:block;font-size:1.5rem;margin-bottom:6px;color:var(--rf-forest,#18372f)}
+.rf36-actions{display:flex;gap:12px;flex-wrap:wrap;margin-top:26px}
+.rf36-btn{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  text-decoration:none;
+  padding:12px 22px;
+  border-radius:999px;
+  border:1px solid rgba(23,32,29,.18);
+  color:#17201d;
+  font-weight:760;
+  background:#fff;
+  box-shadow:0 6px 18px rgba(23,32,29,.05);
+  transition:all .2s ease;
+}
+.rf36-btn:hover{
+  transform:translateY(-2px);
+  box-shadow:0 12px 28px rgba(23,32,29,.1);
+}
+.rf36-btn.primary{
+  background:linear-gradient(180deg,#1f2d29,#111a17);
+  color:#fff;
+  border-color:rgba(255,255,255,.18);
+  box-shadow:0 8px 24px rgba(23,32,29,.22);
+}
+.rf36-btn.primary:hover{
+  background:linear-gradient(180deg,#283a35,#182521);
+  box-shadow:0 14px 34px rgba(23,32,29,.32);
+}
+
+@media(max-width:880px){
+  .rf36-grid,.rf36-enrol .steps{grid-template-columns:1fr}
+  .rf36-card{min-height:300px}
+  .rf36-enrol{padding:24px}
+}

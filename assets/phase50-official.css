@@ -1,0 +1,47 @@
+/* PHASE 50 — Official school website visual system */
+:root{--school-green:#123b32;--school-green-2:#1d5145;--school-gold:#b38a46;--school-cream:#f5f2ea;--school-ink:#1c2824;--school-muted:#64716b;--school-line:#d9ded9}
+body{font-size:15px;color:var(--school-ink)}
+.official-topbar{background:#102f29;color:#dfe9e4;font-size:14px;letter-spacing:.06em}
+.official-topbar-inner{min-height:34px;display:flex;align-items:center;justify-content:space-between;gap:20px}
+.official-topbar-inner>span{font-weight:800;letter-spacing:.16em;color:#fff}.official-topbar a{color:#cbd9d4;margin-left:22px}.official-topbar a:hover{color:#fff}
+.official-header{position:sticky;top:0;background:#fff;border-bottom:1px solid var(--school-line);box-shadow:0 2px 12px rgba(20,45,37,.06);backdrop-filter:none}
+.official-header .header-inner{min-height:88px}.official-brand{gap:13px}.brand-crest{width:48px;height:48px;flex:0 0 48px}.brand-copy{display:flex;flex-direction:column;line-height:1.15}.brand-copy strong{font-family:var(--rf-type-family);font-size:23px;color:var(--school-green);font-weight:700}.brand-copy small{margin-top:5px;color:var(--school-muted);font-size:14px;letter-spacing:.14em;text-transform:uppercase;font-weight:800}
+.official-header .nav{gap:4px;align-self:stretch}.official-header .nav>a,.official-header .nav-group>a{padding:34px 12px;color:#44524d;font-size:14px;letter-spacing:.02em}.official-header .nav>a:hover,.official-header .nav-link-active,.official-header .nav-group>a:hover{background:#fafaf8}
+.official-header .nav-cta{margin-left:8px;background:var(--school-green)!important;color:#fff!important;border:1px solid var(--school-green)!important;padding:11px 17px!important;height:max-content;align-self:center}.official-header .nav-cta:hover{background:var(--school-green-2)!important;color:#fff!important}
+.dropdown{border-top:3px solid var(--school-gold);border-radius:0;box-shadow:0 14px 35px rgba(15,43,35,.14)}
+.hero-home{min-height:650px}.hero-overlay{background:linear-gradient(90deg,rgba(10,36,29,.93),rgba(10,36,29,.68) 52%,rgba(10,36,29,.25))}.hero-content h1,.page-hero h1{letter-spacing:-.02em}.hero-content>p:not(.eyebrow){font-size:18px;line-height:1.65}.hero-content .btn{min-height:45px}.btn-gold{background:var(--school-gold)}
+.page-hero{background:var(--school-cream);padding:92px 0 75px;border-bottom:1px solid var(--school-line)}.page-hero h1{font-size:clamp(40px,5vw,64px);max-width:850px}.page-hero p:last-child{font-size:17px;max-width:700px}
+.section{padding:88px 0}.section-heading h2,.intro h2,.image-split h2,.narrow h2{letter-spacing:-.02em}.feature-card,.content-card,.news-card-small{border-radius:2px;box-shadow:0 6px 22px rgba(20,45,37,.045)}.feature-card:hover{transform:translateY(-3px)}
+.cream-section{background:var(--school-cream)}.dark-section{background:var(--school-green)}
+.site-footer{background:#0d2b25;padding-top:64px}.site-footer h2{font-size:27px}.footer-brand{letter-spacing:.2em}.footer-bottom{margin-top:45px}
+/* Trustworthy institutional details */
+.notice-bar,.notice{border-radius:0}.official-header a:focus-visible,.official-topbar a:focus-visible,.btn:focus-visible{outline:3px solid rgba(179,138,70,.45);outline-offset:3px}
+/* Give application/admin surfaces the same institutional treatment */
+.form-shell{border-top:4px solid var(--school-green);border-radius:2px}.field input,.field select,.field textarea{border-radius:0}.form-actions .btn{border-radius:0}
+@media(max-width:1000px){.official-header .nav>a,.official-header .nav-group>a{padding-left:8px;padding-right:8px}.brand-copy small{display:none}}
+@media(max-width:720px){.official-topbar{display:none}.official-header .header-inner{min-height:72px}.brand-crest{width:42px;height:42px;flex-basis:42px}.brand-copy strong{font-size:19px}.official-header .nav{top:72px}.official-header .nav>a,.official-header .nav-group>a{padding:13px 0}.official-header .nav-cta{margin:7px 0;padding:12px!important;text-align:center}}
+
+/* Phase 51 admissions + Cambridge story */
+.admission-callout,.contact-card{margin-top:2rem;padding:1.5rem;border:1px solid rgba(184,132,32,.35);background:rgba(255,255,255,.65);border-radius:4px}.dark-section .contact-card{background:rgba(255,255,255,.08);border-color:rgba(255,255,255,.2)}.fee-highlight{display:grid;grid-template-columns:repeat(2,1fr);gap:1rem;margin:2rem 0}.fee-highlight>div{padding:1.5rem;border-top:4px solid #b88420;background:#fff}.fee-highlight span,.fee-highlight small{display:block}.fee-highlight strong{display:block;font-size:2.25rem;color:#18372f;margin:.35rem 0}.story-grid{display:grid;grid-template-columns:1fr 1fr;gap:2rem;margin:2rem 0}.story-grid>div{padding:1.5rem;background:#fff;border:1px solid rgba(24,55,47,.12)}@media(max-width:700px){.fee-highlight,.story-grid{grid-template-columns:1fr}}
+
+/* Phase 52 — supplied Ridgefield and Cambridge brand artwork */
+.official-brand{align-items:center}
+.brand-logo-image{display:block;width:auto;height:64px;max-width:265px;object-fit:contain;object-position:left center;flex:0 1 auto}
+.official-brand .brand-copy{display:none}
+.footer-logo-wrap{display:inline-flex;align-items:center;justify-content:center;background:#fff;padding:8px 12px;border-radius:3px;max-width:285px;margin-bottom:12px}
+.footer-logo-image{display:block;width:auto;height:58px;max-width:250px;object-fit:contain}
+.footer-cambridge-logo{display:flex;align-items:center;justify-content:center;background:#fff;padding:10px 14px;max-width:300px;margin-bottom:18px;border-radius:3px}
+.footer-cambridge-logo img{display:block;width:auto;height:58px;max-width:270px;object-fit:contain}
+.portal-brand-logo{display:flex;justify-content:center;align-items:center;margin:0 auto 28px}
+.portal-brand-logo img{display:block;width:auto;height:76px;max-width:300px;object-fit:contain}
+@media(max-width:720px){.brand-logo-image{height:50px;max-width:215px}.footer-logo-image{height:52px;max-width:220px}.footer-cambridge-logo img{height:50px;max-width:230px}.portal-brand-logo img{height:66px;max-width:260px}}
+
+.home-brand-lockup{display:flex;align-items:center;margin-bottom:26px}
+.home-brand-lockup img{display:block;width:auto;height:68px;max-width:300px;object-fit:contain}
+.cambridge-brand-lockup{display:flex;justify-content:flex-start;align-items:center;margin-bottom:28px}
+.cambridge-brand-lockup img{display:block;width:auto;height:58px;max-width:280px;object-fit:contain;background:#fff;padding:8px 12px}
+.cambridge-page-logo{display:flex;justify-content:flex-start;align-items:center;margin-bottom:24px}
+.cambridge-page-logo img{display:block;width:auto;height:72px;max-width:330px;object-fit:contain;background:#fff;padding:10px 14px}
+.cambridge-application-logo{display:flex;justify-content:center;align-items:center;padding:18px 0 6px}
+.cambridge-application-logo img{display:block;width:auto;height:62px;max-width:300px;object-fit:contain}
+@media(max-width:720px){.home-brand-lockup img{height:54px;max-width:240px}.cambridge-brand-lockup img{height:50px;max-width:240px}.cambridge-page-logo img{height:60px;max-width:270px}.cambridge-application-logo img{height:54px;max-width:250px}}

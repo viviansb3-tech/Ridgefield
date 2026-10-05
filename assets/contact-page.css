@@ -1,0 +1,119 @@
+/* Ridgefield Contact & Enquiry Page - Glassmorphic UI */
+.rf-contact{
+  max-width:980px;
+  margin:auto;
+  padding:48px 20px 90px;
+}
+.rf-contact-grid{
+  display:grid;
+  grid-template-columns:1.2fr 1fr;
+  gap:24px;
+}
+.rf-contact-card{
+  background:
+    linear-gradient(180deg,rgba(255,255,255,.88),rgba(255,255,255,.70)),
+    rgba(255,255,255,.80);
+  -webkit-backdrop-filter:blur(24px) saturate(165%);
+  backdrop-filter:blur(24px) saturate(165%);
+  border:1px solid rgba(255,255,255,.8);
+  border-radius:28px;
+  padding:32px;
+  margin:18px 0;
+  box-shadow:0 20px 55px -10px rgba(23,32,29,.09), inset 0 1px 0 #fff;
+  transition:box-shadow .3s ease, border-color .3s ease;
+}
+.rf-contact-card:hover{
+  border-color:rgba(197,160,89,.35);
+  box-shadow:0 28px 70px -12px rgba(23,32,29,.14), inset 0 1px 0 #fff;
+}
+.rf-contact label{
+  display:block;
+  font-weight:750;
+  margin:12px 0 6px;
+  font-size:.9375rem;
+}
+.rf-contact input,.rf-contact select,.rf-contact textarea{
+  width:100%;
+  box-sizing:border-box;
+  padding:13px 15px;
+  border:1px solid rgba(23,32,29,.14);
+  border-radius:16px;
+  background:rgba(255,255,255,.85);
+  color:#17201d;
+  font-size:1rem;
+  box-shadow:inset 0 1px 2px rgba(0,0,0,.03), inset 0 1px 0 #fff;
+  margin:4px 0 16px;
+  transition:border-color .25s ease,box-shadow .25s ease,background .25s ease;
+}
+.rf-contact input:focus,.rf-contact select:focus,.rf-contact textarea:focus{
+  border-color:rgba(197,160,89,.85);
+  box-shadow:0 0 0 4px rgba(197,160,89,.18), inset 0 1px 0 #fff;
+  background:#fff;
+  outline:none;
+}
+.rf-contact textarea{
+  min-height:140px;
+  resize:vertical;
+}
+.rf-contact-btn{
+  border:1px solid rgba(255,255,255,.2);
+  border-radius:999px;
+  background:linear-gradient(180deg,#1f2d29,#111a17);
+  color:#fff;
+  padding:13px 26px;
+  min-height:48px;
+  font-weight:800;
+  cursor:pointer;
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  box-shadow:0 10px 24px rgba(23,32,29,.20), inset 0 1px 0 rgba(255,255,255,.25);
+  transition:transform .2s ease,box-shadow .2s ease,background .2s ease;
+}
+.rf-contact-btn:hover{
+  transform:translateY(-2px);
+  box-shadow:0 16px 36px rgba(23,32,29,.30), inset 0 1px 0 rgba(255,255,255,.35);
+  background:linear-gradient(180deg,#283a35,#182521);
+}
+@media(max-width:760px){
+  .rf-contact-grid{grid-template-columns:1fr}
+  .rf-contact-card{padding:22px}
+  .rf-contact-btn{width:100%}
+}
+/* Contact page: compact introduction and clear direct-contact actions. */
+.rf-contact{
+  --rf-h1:clamp(2.4rem,5vw,3.5rem);
+  --rf-h2:clamp(1.5rem,3vw,2rem);
+  padding-top:28px;
+}
+.rf-contact > h1{margin:22px 0 16px}
+.rf-contact > p{margin:0 0 18px}
+.rf-contact .rf-form-assurance{margin:16px 0 20px}
+.rf-contact-card h2{margin:0 0 12px}
+.rf-contact-card > p{margin:0 0 18px}
+.rf-contact .rf-direct-contact{padding:24px 28px}
+.rf-direct-actions{display:flex;flex-wrap:wrap;gap:12px}
+.rf-contact .rf-direct-actions a{
+  display:inline-flex;align-items:center;justify-content:space-between;gap:24px;
+  min-height:46px;padding:10px 18px;border:1px solid #c9c6b8;border-radius:12px;
+  color:#17201d;background:#f5f4ef;text-decoration:none;font-weight:700;
+}
+.rf-contact .rf-direct-actions a:first-child{background:#172e26;color:#fff;border-color:#172e26}
+.rf-contact .rf-direct-actions a:hover{box-shadow:0 3px 12px #17201d1a}
+.rf-contact a:focus-visible{outline:3px solid #977333;outline-offset:4px}
+.rf-contact #enqPhoneHint{display:block;margin:-8px 0 16px;color:#526159;line-height:1.5}
+@media(max-width:540px){
+  .rf-contact{padding:22px 16px 60px}
+  .rf-contact .rf-direct-contact{padding:22px}
+  .rf-direct-actions{flex-direction:column}
+  .rf-direct-actions a{width:100%;box-sizing:border-box}
+}
+
+/* Compact hero for task-oriented contact page */
+.contact-hero{padding:54px 0 44px;min-height:auto}
+@media(max-width:760px){
+  .contact-hero{padding:36px 0 24px;min-height:auto}
+  .contact-hero .lead{font-size:1rem;line-height:1.5;margin-bottom:18px}
+  .contact-hero .hero-actions{flex-direction:column;gap:10px}
+  .contact-hero .hero-actions a{width:100%;text-align:center;box-sizing:border-box}
+}

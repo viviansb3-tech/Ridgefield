@@ -1,0 +1,133 @@
+/* Ridgefield asset integration — approved landing page remains untouched. */
+
+/* Use the transparent white Ridgefield logo on the dark site footer. */
+.rf-footer-logo .rf-footer-brand-white{
+  width:min(210px,100%);
+  height:auto;
+  max-width:210px;
+  aspect-ratio:auto;
+  object-fit:contain;
+  background:transparent!important;
+  padding:0!important;
+  border-radius:0!important;
+  box-shadow:none!important;
+}
+.rf-footer-logo:hover .rf-footer-brand-white{transform:none!important}
+
+/* Editorial photo/content bands for key secondary pages. */
+.rf-asset-feature{background:#fff}
+.rf-asset-feature:nth-of-type(even){background:#f5f4ef}
+.rf-asset-split{
+  display:grid;
+  grid-template-columns:minmax(0,1.08fr) minmax(300px,.92fr);
+  gap:clamp(32px,5vw,64px);
+  align-items:center;
+}
+.rf-asset-photo{
+  margin:0;
+  min-height:360px;
+  overflow:hidden;
+  border-radius:22px;
+  background:#ebe8df;
+}
+.rf-asset-photo img{
+  display:block;
+  width:100%;
+  height:100%;
+  min-height:360px;
+  object-fit:cover;
+}
+.rf-asset-photo-contain{
+  display:grid;
+  place-items:center;
+  background:#fff;
+  border:1px solid rgba(23,32,29,.08);
+}
+.rf-asset-photo-contain img{
+  min-height:0;
+  height:auto;
+  width:min(88%,640px);
+  object-fit:contain;
+}
+.rf-asset-copy h2{max-width:15ch}
+.rf-asset-copy p{max-width:58ch}
+.rf-asset-cambridge-mark{
+  display:block;
+  width:min(360px,100%);
+  height:auto;
+  margin-top:22px;
+  border-radius:12px;
+}
+
+/* Subjects: visualise the three broad learning modes without changing the verified subject list. */
+.rf-subject-visuals{background:#f5f4ef}
+.rf-subject-visual-grid{
+  display:grid;
+  grid-template-columns:repeat(3,minmax(0,1fr));
+  gap:16px;
+}
+.rf-subject-visual-grid figure{
+  margin:0;
+  overflow:hidden;
+  border-radius:18px;
+  background:#17201d;
+  position:relative;
+  min-height:310px;
+}
+.rf-subject-visual-grid img{
+  width:100%;
+  height:310px;
+  display:block;
+  object-fit:cover;
+  opacity:.9;
+}
+.rf-subject-visual-grid figcaption{
+  position:absolute;
+  left:18px;
+  right:18px;
+  bottom:16px;
+  padding:9px 12px;
+  border-radius:999px;
+  background:rgba(23,32,29,.84);
+  color:#fff;
+  font-size:.9rem;
+  font-weight:700;
+  width:max-content;
+  max-width:calc(100% - 36px);
+}
+
+/* Story page: place the standalone Ridgefield mark beside real school imagery. */
+.rf-story-brand-panel{background:#ebe8df}
+.rf-story-brand-grid{
+  display:grid;
+  grid-template-columns:minmax(280px,.72fr) minmax(0,1.28fr);
+  gap:clamp(30px,5vw,64px);
+  align-items:center;
+}
+.rf-story-brand-mark img{
+  width:min(180px,55%);
+  height:auto;
+  display:block;
+  margin-bottom:22px;
+}
+.rf-story-brand-mark h2{max-width:14ch}
+.rf-story-brand-photo{
+  margin:0;
+  border-radius:22px;
+  overflow:hidden;
+  min-height:420px;
+}
+.rf-story-brand-photo img{
+  display:block;
+  width:100%;
+  height:420px;
+  object-fit:cover;
+}
+
+@media (max-width:800px){
+  .rf-asset-split,.rf-story-brand-grid{grid-template-columns:1fr}
+  .rf-subject-visual-grid{grid-template-columns:1fr}
+  .rf-subject-visual-grid figure,.rf-subject-visual-grid img{min-height:260px;height:260px}
+  .rf-asset-photo,.rf-asset-photo img{min-height:300px}
+  .rf-story-brand-photo,.rf-story-brand-photo img{min-height:320px;height:320px}
+}

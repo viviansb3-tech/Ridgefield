@@ -1,0 +1,63 @@
+
+/* ============================================================
+   PATHWAY CONVERSION READINESS
+   Decision support, FAQ and parent-facing planning
+   ============================================================ */
+.rf-decision-strip{
+  display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:30px
+}
+.rf-decision-card{
+  background:#fff;border:1px solid rgba(23,32,29,.08);border-radius:16px;padding:20px
+}
+.rf-decision-card span{
+  display:block;color:#a58b54;font-weight:800;font-size:.875rem;letter-spacing:.07em;
+  text-transform:uppercase;margin-bottom:10px
+}
+.rf-decision-card h3{font-size:1.1rem!important;margin:0 0 8px}
+.rf-decision-card p{font-size:.94rem;color:#5b6661;margin:0}
+.rf-week-grid{
+  display:grid;grid-template-columns:repeat(4,1fr);gap:14px
+}
+.rf-week-card{
+  background:#fff;border-radius:16px;padding:22px;border:1px solid rgba(23,32,29,.08)
+}
+.rf-week-card strong{display:block;margin-bottom:8px;color:#17201d}
+.rf-week-card p{margin:0;color:#5b6661;font-size:.92rem}
+.rf-week-disclaimer{
+  margin-top:18px;padding:14px 16px;border-radius:12px;background:#ebe8df;color:#5b6661;font-size:.9rem
+}
+.rf-faq-list{display:grid;gap:10px;max-width:900px}
+.rf-faq-list details{
+  background:#fff;border:1px solid rgba(23,32,29,.09);border-radius:14px;padding:0 18px
+}
+.rf-faq-list summary{
+  cursor:pointer;list-style:none;padding:18px 34px 18px 0;font-weight:750;color:#17201d;position:relative
+}
+.rf-faq-list summary::-webkit-details-marker{display:none}
+.rf-faq-list summary::after{
+  content:"+";position:absolute;right:0;top:50%;transform:translateY(-50%);
+  color:#a58b54;font-size:1.25rem;font-weight:500
+}
+.rf-faq-list details[open] summary::after{content:"−"}
+.rf-faq-list details p{margin:0;padding:0 0 18px;color:#5b6661}
+.rf-conversion-panel{
+  display:grid;grid-template-columns:minmax(0,1fr) auto;gap:36px;align-items:center;
+  background:#17201d;color:#fff;border-radius:22px;padding:30px
+}
+.rf-conversion-panel h2,.rf-conversion-panel p{color:#fff!important}
+.rf-conversion-panel p{color:rgba(255,255,255,.74)!important;max-width:65ch;margin-bottom:0}
+.rf-conversion-actions{display:flex;gap:10px;flex-wrap:wrap;justify-content:flex-end}
+.rf-conversion-actions a{white-space:nowrap}
+.rf-pathway-choice-note{
+  padding:14px 16px;border:1px solid rgba(23,32,29,.10);border-radius:12px;background:#fff;
+  color:#5b6661;margin:16px 0 0
+}
+@media(max-width:980px){
+  .rf-week-grid{grid-template-columns:1fr 1fr}
+  .rf-conversion-panel{grid-template-columns:1fr}
+  .rf-conversion-actions{justify-content:flex-start}
+}
+@media(max-width:680px){
+  .rf-decision-strip,.rf-week-grid{grid-template-columns:1fr}
+  .rf-conversion-panel{padding:22px}
+}

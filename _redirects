@@ -1,0 +1,12 @@
+/apply              /apply.html              200
+/admissions         /admission.html          200
+/academics          /academics.html          200
+/cambridge          /cambridge.html          200
+/caps               /caps-secondary.html     200
+/primary            /primary.html            200
+/contact            /contact.html            200
+/search             /search.html             200
+/cambridge-application.html /apply.html       301
+/health             /health.json             200
+/status             /status.html             200
+/*                  /404.html                404

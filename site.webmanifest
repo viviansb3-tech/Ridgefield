@@ -1,0 +1,9 @@
+{
+  "name": "Ridgefield Academy",
+  "short_name": "Ridgefield",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#f5f4ef",
+  "theme_color": "#17201d",
+  "description": "Ridgefield Academy school website."
+}
