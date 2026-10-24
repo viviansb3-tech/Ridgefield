@@ -21,7 +21,8 @@
     "ANTIGRAVITY-HANDOFF.md",
     "scratch/",
     "logs/",
-    "deploy-manifest.json"
+    "deploy-manifest.json",
+    "*.zip"
   ],
   "files": [
     "404.html",

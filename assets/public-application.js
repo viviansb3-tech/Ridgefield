@@ -109,6 +109,8 @@
 
   function selectPathway(value,card,restoredGrade=""){
     if(!pathways[value])return;
+    const samePathway = (pathway === value);
+    const gradeToRestore = restoredGrade || (samePathway ? grade.value : "");
     pathway=value;
     document.querySelectorAll(".rf-apply-path").forEach(c=>{
       const selected=c===card || c.dataset.pathway===value;
@@ -119,7 +121,7 @@
     hiddenCampus.value=pathways[pathway].campus;
     campus.textContent="Campus: "+pathways[pathway].campus;
     grade.innerHTML='<option value="">Select grade / level</option>'+pathways[pathway].grades.map(g=>`<option value="${g}">${g}</option>`).join("");
-    if(restoredGrade && pathways[pathway].grades.includes(restoredGrade))grade.value=restoredGrade;
+    if(gradeToRestore && pathways[pathway].grades.includes(gradeToRestore))grade.value=gradeToRestore;
     docs.innerHTML="<strong>Prepare for your admissions consultation:</strong><br>"+pathways[pathway].docs.join(" · ");
     // Update Step 5 checklist item labels to be pathway-specific
     const addTitle=document.getElementById("docAdditionalTitle");

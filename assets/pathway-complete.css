@@ -12,6 +12,8 @@
 }
 
 /* Smooth anchor scrolling offset matching floating header + subnav */
+section[id],
+article[id],
 .rf-pathway-hub section[id],
 .rf-pathway-hub [id="overview"],
 .rf-pathway-hub [id="journey"],
@@ -216,7 +218,8 @@
 /* ------------------------------------------------------------
    STREAMLINED STICKY SUB-NAVIGATION
    ------------------------------------------------------------ */
-.pathway-subnav {
+.pathway-subnav,
+.rf-pathway-local-nav {
   position: sticky;
   top: 72px;
   z-index: 95;
@@ -226,7 +229,8 @@
   border-bottom: 1px solid rgba(23, 32, 29, 0.09);
   box-shadow: 0 4px 20px rgba(23, 32, 29, 0.05);
 }
-.pathway-subnav .container {
+.pathway-subnav .container,
+.rf-pathway-local-nav .container {
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -234,18 +238,20 @@
   padding: 10px 0;
   width: min(92%, 1220px);
   margin: auto;
-}
-.pathway-subnav-links {
-  display: flex;
-  align-items: center;
-  gap: 8px;
   overflow-x: auto;
   scrollbar-width: none;
 }
-.pathway-subnav-links::-webkit-scrollbar {
+.rf-pathway-local-nav .container::-webkit-scrollbar {
   display: none;
 }
-.pathway-subnav-links a {
+.pathway-subnav-links,
+.rf-pathway-local-nav .container {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.pathway-subnav-links a,
+.rf-pathway-local-nav a {
   padding: 8px 18px;
   border-radius: 999px;
   font-size: 14px;
@@ -256,9 +262,17 @@
   transition: all 0.2s ease;
 }
 .pathway-subnav-links a:hover,
-.pathway-subnav-links a:focus-visible {
+.pathway-subnav-links a:focus-visible,
+.rf-pathway-local-nav a:hover,
+.rf-pathway-local-nav a:focus-visible {
   background: #ebe8df;
   color: #111a17;
+}
+.rf-pathway-local-nav a.is-active,
+.rf-pathway-local-nav a[aria-current="page"] {
+  background: rgba(165, 139, 84, 0.16);
+  color: #8b6e2f;
+  font-weight: 800;
 }
 .pathway-subnav-cta {
   flex-shrink: 0;
@@ -781,6 +795,7 @@
     min-height: auto;
     padding: 85px 0 65px;
   }
+  .hero-stats,
   .pathway-hero .hero-stats {
     grid-template-columns: repeat(2, 1fr);
   }
@@ -800,11 +815,13 @@
   .pathway-decision-grid {
     grid-template-columns: repeat(2, 1fr);
   }
-  .pathway-subnav {
+  .pathway-subnav,
+  .rf-pathway-local-nav {
     top: 60px;
   }
 }
 @media (max-width: 640px) {
+  .hero-stats,
   .pathway-hero .hero-stats,
   .pathway-roadmap-grid,
   .pathway-subjects-grid,
@@ -812,6 +829,7 @@
   .pathway-showcase-pills,
   .pathway-campus-features {
     grid-template-columns: 1fr;
+    gap: 12px;
   }
   .pathway-hero .button-row {
     flex-direction: column;
@@ -822,6 +840,23 @@
   }
   .pathway-subnav-cta {
     display: none;
+  }
+  .pathway-subnav,
+  .rf-pathway-local-nav {
+    top: 58px;
+  }
+}
+@media (max-width: 480px) {
+  .pathway-hero .hero-stat,
+  .pathway-hero .stat-capsule,
+  .stat-capsule {
+    padding: 16px 18px;
+    border-radius: 14px;
+  }
+  .stat-capsule .stat-number,
+  .pathway-hero .stat-capsule strong,
+  .pathway-hero .hero-stat strong {
+    font-size: 22px;
   }
 }
 

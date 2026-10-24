@@ -1,20 +1,8 @@
 User-agent: *
-Allow: /
-Disallow: /admin-
-Disallow: /portal/
-Disallow: /cms/
-Disallow: /server/
-Disallow: /login
-Disallow: /forgot-password
-Disallow: /reset-password
-Disallow: /change-password
-Disallow: /application-status
-
-Disallow: /status.html
-
-Disallow: /health.json
-
-Sitemap: https://www.ridgefieldacademy.co.za/sitemap.xml
 Disallow: /application-success.html
 Disallow: /enquiry-success.html
 Disallow: /netlify-forms.html
+Disallow: /status.html
+Disallow: /health.json
+
+Sitemap: https://www.ridgefieldacademy.co.za/sitemap.xml

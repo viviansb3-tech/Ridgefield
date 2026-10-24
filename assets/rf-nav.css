@@ -770,3 +770,73 @@ html.rf-search-open{overflow:hidden}
 @media(prefers-reduced-motion:reduce){
   .rf-modal-backdrop,.rf-modal-dialog{transition:none}
 }
+
+/* Keep breadcrumb labels and separators on the same vertical centre. */
+.rf-breadcrumb-inner > a,
+.rf-breadcrumb-inner > span {
+  display:inline-flex !important;
+  align-items:center !important;
+  align-self:center;
+  margin:0 !important;
+  line-height:1.5 !important;
+  min-height:32px;
+  box-sizing:border-box;
+}
+.rf-breadcrumb-inner > a { border:1px solid transparent; }
+
+/* The school name titles the home photograph. */
+.hero-home .hero-content .home-picture-title {
+  display:block;
+  margin:0 0 20px;
+  color:#fff;
+  font-size:clamp(2.5rem,6vw,5rem);
+  line-height:1.08;
+}
+.hero-home .hero-content > .home-picture-intro {
+  max-width:820px;
+  font-size:clamp(1.4rem,3vw,2.4rem);
+  line-height:1.3;
+  font-weight:650;
+  color:#fff;
+  margin:0 0 20px;
+}
+
+/* Equal-height pathway links, with a separate label row on small screens. */
+.rf-public-pathbar-inner { flex-wrap:wrap; overflow:visible; gap:8px; }
+.rf-public-pathbar-inner > a {
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  min-height:44px;
+  margin:0;
+  padding:8px 14px;
+  line-height:1.4;
+  box-sizing:border-box;
+}
+@media(max-width:720px) {
+  .rf-public-pathbar-inner > span { flex-basis:100%; margin:0; }
+  .rf-public-pathbar-inner { padding:12px 20px; }
+}
+
+/* Reserve space for navigation and the application action before the tagline. */
+.rf-public-header .rf-public-nav { min-width:0; }
+.rf-public-header .rf-nav-section-toggle { white-space:nowrap; }
+.rf-public-header .rf-public-actions { flex-shrink:0; }
+@media(max-width:1600px) {
+  .rf-public-header .rf-public-brand-copy { display:none; }
+}
+
+/* Keep programme names separate from their supporting grade descriptions. */
+.rf-apply-paths > .rf-apply-path {
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  gap:6px;
+  padding:18px 22px;
+  min-height:88px;
+  text-align:center;
+  white-space:normal;
+}
+.rf-apply-paths > .rf-apply-path > strong,
+.rf-apply-paths > .rf-apply-path > span { display:block; margin:0; line-height:1.4; }
