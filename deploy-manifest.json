@@ -11,6 +11,7 @@
     "scripts/",
     "database/",
     "storage/",
+    "humanities/",
     "uploads/",
     "*.docx",
     "*.psd",

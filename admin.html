@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Ridgefield Academy — Central Admin CMS</title>
+<style>
+*{box-sizing:border-box}body{margin:0;font-family:Inter,system-ui,sans-serif;background:#f5f4ef;color:#17201d}
+.layout{display:grid;grid-template-columns:250px 1fr;min-height:100vh}.side{background:#17201d;color:#fff;padding:24px;position:sticky;top:0;height:100vh}
+.brand{font-weight:900;letter-spacing:.14em;margin-bottom:35px}.nav button{width:100%;text-align:left;background:transparent;border:0;color:#fff;padding:13px;border-radius:9px;margin-bottom:4px;cursor:pointer}.nav button.active,.nav button:hover{background:#ffffff18}
+.main{padding:30px;max-width:1400px;width:100%;margin:auto}.top{display:flex;justify-content:space-between;align-items:center;gap:15px;flex-wrap:wrap}
+h1{font-size:clamp(2.2rem,5vw,4.2rem);margin:5px 0}.muted{opacity:.62}.key{padding:11px;border:1px solid #ccc;border-radius:9px}
+.btn{padding:11px 16px;border:0;border-radius:999px;background:#17201d;color:#fff;font-weight:700;cursor:pointer}.cards{display:grid;grid-template-columns:repeat(5,1fr);gap:12px;margin:25px 0}.card,.panel{background:#fff;border:1px solid #ddd;border-radius:17px;padding:20px}.card b{font-size:1.8rem;display:block;margin-top:5px}
+.panel{margin-top:18px}table{width:100%;border-collapse:collapse}th,td{text-align:left;padding:11px 7px;border-bottom:1px solid #eee}.status{font-size:.78rem;background:#eee;padding:5px 8px;border-radius:99px}
+input,select,textarea{font:inherit;padding:11px;border:1px solid #ccc;border-radius:8px;width:100%;margin:6px 0 14px}textarea{min-height:130px}.grid2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.section{display:none}.section.active{display:block}.sitecards{display:grid;grid-template-columns:repeat(3,1fr);gap:15px}.site{padding:25px;border-radius:16px;background:#ebe8df}.site h3{margin-top:0}.actions{display:flex;gap:9px;flex-wrap:wrap}
+#message{margin:15px 0}
+@media(max-width:900px){.layout{grid-template-columns:1fr}.side{position:relative;height:auto}.cards{grid-template-columns:1fr 1fr}.sitecards,.grid2{grid-template-columns:1fr}}
+</style><link rel="stylesheet" href="assets/phase50-official.css">
+</head>
+<body><div class="layout">
+<aside class="side"><div class="brand">RIDGEFIELD</div><div class="nav">
+<button class="active" onclick="show('dashboard',this)">Dashboard</button>
+<button onclick="show('applications',this)">Applications</button>
+<button onclick="show('students',this)">Students</button>
+<button onclick="show('sites',this)">Sites & Pathways</button>
+<button onclick="show('content',this)">Website Content</button>
+</div></aside>
+<main class="main">
+<div class="top"><div><div class="muted">CENTRAL ADMINISTRATION</div><h1>School CMS</h1></div><div class="actions"><input id="key" class="key" type="password" placeholder="Admin key" style="width:220px;margin:0"><button class="btn" onclick="connect()">Connect</button></div></div>
+<div id="message"></div>
+
+<section id="dashboard" class="section active">
+<div class="cards"><div class="card">Applications<b id="sApps">—</b></div><div class="card">Pending<b id="sPending">—</b></div><div class="card">Under Review<b id="sReview">—</b></div><div class="card">Accepted<b id="sAccepted">—</b></div><div class="card">Students<b id="sStudents">—</b></div></div>
+<div class="panel"><h2>Three Ridgefield pathways</h2><div class="sitecards">
+<div class="site"><h3>Cambridge</h3><p>25 Wilcock Road, Noordhoek</p><p>International Cambridge pathway.</p></div>
+<div class="site"><h3>CAPS Secondary</h3><p>22 Maartens Street</p><p>South African national secondary pathway.</p></div>
+<div class="site"><h3>Primary</h3><p>22 Maartens Street</p><p>Primary school pathway.</p></div>
+</div></div>
+</section>
+
+<section id="applications" class="section"><div class="panel"><h2>Admissions</h2><div class="actions"><select id="appFilter" onchange="apps()"><option value="">All</option><option>Pending</option><option>Under Review</option><option>Accepted</option><option>Declined</option><option>Waitlisted</option></select><button class="btn" onclick="apps()">Refresh</button></div><div style="overflow:auto;margin-top:15px"><table><thead><tr><th>Reference</th><th>Learner</th><th>Pathway</th><th>Grade</th><th>Status</th><th>Date</th></tr></thead><tbody id="appRows"></tbody></table></div></div></section>
+
+<section id="students" class="section"><div class="panel"><h2>Student Register</h2><div class="grid2"><div><label>First name</label><input id="sf"></div><div><label>Last name</label><input id="sl"></div><div><label>Grade</label><input id="sg"></div><div><label>Pathway</label><select id="sp"><option>Cambridge</option><option>CAPS Secondary</option><option>Primary</option></select></div><div><label>Campus</label><input id="sc"></div><div><label>Parent email</label><input id="se"></div></div><button class="btn" onclick="addStudent()">Add Student</button></div><div class="panel"><div style="overflow:auto"><table><thead><tr><th>Student Ref</th><th>Name</th><th>Grade</th><th>Pathway</th><th>Campus</th><th>Status</th></tr></thead><tbody id="studentRows"></tbody></table></div></div></section>
+
+<section id="sites" class="section"><div class="panel"><h2>Pathway & Campus Control</h2><div class="sitecards"><div class="site"><h3>Cambridge</h3><p><b>25 Wilcock Road, Noordhoek</b></p><p>IGCSE / AS</p></div><div class="site"><h3>CAPS Secondary</h3><p><b>22 Maartens Street</b></p><p>CAPS National Curriculum</p></div><div class="site"><h3>Primary</h3><p><b>22 Maartens Street</b></p><p>Primary curriculum</p></div></div></div></section>
+
+<section id="content" class="section"><div class="panel"><h2>Edit Website Content</h2><p class="muted">Edit a section title/body and save it to the CMS database.</p><label>Section key</label><input id="ckey" placeholder="e.g. cambridge-home"><label>Title</label><input id="ctitle"><label>Body</label><textarea id="cbody"></textarea><button class="btn" onclick="saveContent()">Save Content</button></div><div class="panel"><h3>Saved sections</h3><div id="contentList"></div></div></section>
+</main></div>
+<script>
+const H=()=>({'x-admin-key':document.getElementById('key').value});
+function msg(x){document.getElementById('message').textContent=x}
+function show(id,b){document.querySelectorAll('.section').forEach(x=>x.classList.remove('active'));document.getElementById(id).classList.add('active');document.querySelectorAll('.nav button').forEach(x=>x.classList.remove('active'));b.classList.add('active');if(id==='applications')apps();if(id==='students')students();if(id==='content')content();}
+async function connect(){if(!key.value){msg('Enter admin key');return}let r=await fetch('/api/admin/summary',{headers:H()});if(!r.ok){msg('Connection failed or key invalid');return}msg('Connected');summary();apps();students();}
+async function summary(){let r=await fetch('/api/admin/summary',{headers:H()});if(!r.ok)return;let x=await r.json();sApps.textContent=x.applications;sPending.textContent=x.pending;sReview.textContent=x.review;sAccepted.textContent=x.accepted;sStudents.textContent=x.students}
+async function apps(){let st=appFilter.value;let r=await fetch('/api/admin/applications'+(st?'?status='+encodeURIComponent(st):''),{headers:H()});if(!r.ok)return;let d=await r.json();appRows.innerHTML=d.applications.map(x=>`<tr><td>${x.reference}</td><td>${x.learner_first} ${x.learner_last}</td><td>${x.pathway}</td><td>${x.learner_grade}</td><td><span class="status">${x.status}</span></td><td>${new Date(x.created_at).toLocaleDateString()}</td></tr>`).join('')}
+async function students(){let r=await fetch('/api/admin/students',{headers:H()});if(!r.ok)return;let d=await r.json();studentRows.innerHTML=d.students.map(x=>`<tr><td>${x.student_ref}</td><td>${x.first_name} ${x.last_name}</td><td>${x.grade}</td><td>${x.pathway}</td><td>${x.campus}</td><td>${x.status}</td></tr>`).join('')}
+async function addStudent(){let body={firstName:sf.value,lastName:sl.value,grade:sg.value,pathway:sp.value,campus:sc.value,parentEmail:se.value};let r=await fetch('/api/admin/students',{method:'POST',headers:{...H(),'Content-Type':'application/json'},body:JSON.stringify(body)});let d=await r.json();if(!r.ok){msg(d.error);return}msg('Student created: '+d.studentRef);students();summary();}
+async function content(){let r=await fetch('/api/admin/content',{headers:H()});if(!r.ok)return;let d=await r.json();contentList.innerHTML=d.content.map(x=>`<div style="padding:12px;border-bottom:1px solid #eee"><b>${x.section}</b><br>${x.title}</div>`).join('')}
+async function saveContent(){let body={title:ctitle.value,body:cbody.value};let r=await fetch('/api/admin/content/'+encodeURIComponent(ckey.value),{method:'PUT',headers:{...H(),'Content-Type':'application/json'},body:JSON.stringify(body)});let d=await r.json();msg(r.ok?'Content saved':'Error: '+d.error);if(r.ok)content();}
+</script></body></html>

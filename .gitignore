@@ -1,1 +1,48 @@
+# Operating System
 .DS_Store
+Thumbs.db
+*.swp
+*.swo
+*~
+
+# Environment & Sensitive Files (CRITICAL: Never commit .env or API keys)
+.env
+.env.*
+!.env.example
+*.env
+!*.env.example
+*.pem
+*.key
+*.cert
+*.crt
+
+# Dependencies
+node_modules/
+*/node_modules/
+*/*/node_modules/
+
+# Runtime Databases & Logs
+*.sqlite
+*.sqlite3
+*.db
+*.db-shm
+*.db-wal
+server/data/*.db*
+server/data/*.sqlite*
+storage/*.sqlite3
+storage/*.db
+storage/*.tmp
+storage/submissions/
+storage/private/*.json
+storage/**/*.pdf
+storage/*.pdf
+logs/
+*.log
+scratch/
+
+# User Uploads
+uploads/*
+!uploads/.htaccess
+!uploads/.gitkeep
+server/uploads/*
+!server/uploads/.gitkeep

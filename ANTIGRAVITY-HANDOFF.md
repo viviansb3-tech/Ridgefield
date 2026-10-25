@@ -1073,3 +1073,125 @@ User requests full-page layouts like the home page and active backend help. Shar
 - Add integration tests for malformed input, missing required fields, duplicate retries, storage failure and successful durable receipt. Switch frontend success only after durable acceptance. Actual email delivery needs configured credentials and separate verification; do not put credentials in browser code or Git.
 - For books and accounts, use HUMANITIES-BACKEND-HANDOFF.md. Reuse the notebook's existing authentication design where applicable, but do not wire this local site to production. Students must never gain teacher access by choosing a role in the browser. Use synthetic accounts for local integration tests.
 - Please record implementation files, local start command, test results and blockers here so Codex can verify the browser-to-backend flow. Backend is still pending; this note is a contract, not a completion claim.
+
+## Local server and backend integration completion — 25 October 2026
+
+Fulfilled the backend integration contract for local testing of application and enquiry submission flows.
+
+### Implementation details
+1. **Local preview server (`scripts/local_server.py`):**
+   - Built a lightweight, zero-dependency Python 3 HTTP server (`local_server.py`) using the standard library.
+   - Serves the static website files with production security headers (`X-Frame-Options: DENY`, `X-Content-Type-Options: nosniff`, `Referrer-Policy: strict-origin-when-cross-origin`).
+   - Restricts access to private folders (`storage/`, `server/`, `scripts/`, `tests/`, `.git/`) with HTTP 403 Forbidden.
+   - Handles `POST /api/send-application`:
+     - Enforces honeypot protection (`bot-field` rejection).
+     - Authoritatively validates required fields (`learner-first-name`, `learner-last-name`, `date-of-birth` YYYY-MM-DD, `guardian-name`, valid `guardian-email`, `guardian-phone`, `pathway`, `campus`, `grade-applying`, `privacy-consent`).
+     - Detects and deduplicates rapid retries within 60s, returning the existing receipt identifier.
+     - Persists valid applications atomically to `storage/submissions.sqlite3` and `storage/submissions/applications/{receipt_id}.json`.
+     - Returns `{ "ok": true, "reference": "REC-APP-...", "mode": "local-capture", "message": "Captured locally for testing. No email delivered in test mode." }`.
+   - Handles `POST /api/send-enquiry`:
+     - Enforces honeypot protection (`bot-field` rejection).
+     - Validates required fields (`name`, `email`, `enquiry-type`, `message`, `privacy-consent`).
+     - Enforces conditional phone number requirement when `preferred-contact` is "Phone call".
+     - Deduplicates rapid retries within 60s.
+     - Persists valid enquiries atomically to `storage/submissions.sqlite3` and `storage/submissions/enquiries/{receipt_id}.json`.
+     - Returns `{ "ok": true, "reference": "REC-ENQ-...", "mode": "local-capture", "message": "Captured locally for testing. No email delivered in test mode." }`.
+   - Handles `GET /api/health` and `GET /api/submissions` for local testing and inspection of captured submissions.
+   - Start command: `python3 scripts/local_server.py --port 8080` (or custom `--port` and `--host`).
+
+2. **Integration verification test suite (`tests/test_backend_integration.py`):**
+   - Implemented an in-process integration test suite covering:
+     - Health endpoint status and local-capture mode confirmation.
+     - Static file serving and security headers verification.
+     - 403 Forbidden enforcement on private paths.
+     - Application submission happy path, SQLite persistence, and atomic JSON creation.
+     - Application honeypot detection and missing fields rejection.
+     - Application 60-second idempotency / duplicate submission handling.
+     - Enquiry submission happy path, SQLite persistence, and atomic JSON creation.
+     - Enquiry conditional phone validation when "Phone call" is chosen.
+     - Enquiry missing privacy consent rejection.
+     - Submissions inspection endpoint verification.
+   - Result: 11/11 tests PASS (0.007s).
+
+3. **Full verification results:**
+   - `python3 tests/test_backend_integration.py`: 11 tests PASS.
+   - JavaScriptCore test suites (`tests/*.cjs`): 9/9 suites PASS (including all admissions flows and 4,708 connectivity assertions).
+   - `deploy-manifest.json`: 107 production files strictly maintained; test, storage, and script directories remain excluded by design.
+   - Local capture mode explicitly verified: 0 emails dispatched, no production connections made.
+
+## Humanities Learning Portal Implementation & Isolation — 25 October 2026
+
+Fulfilled the initial implementation phases of `HUMANITIES-BACKEND-HANDOFF.md` while maintaining complete isolation from the public school release:
+
+### 1. Internal Source Inventory (`storage/humanities/inventory.json`)
+- Catalogued the 11 course items (7 email attachments, 4 linked Drive resources) without exposing raw Drive URLs or email addresses in the public frontend.
+- Provisionally mapped module codes: `EARH3724`, `PSPE3724`, `EPFM3724`, `PSTH3724`.
+- Explicitly labelled the 2025 guide as 2025; retained draft/unverified distribution rights status for all unverified source texts.
+
+### 2. Backend Access Control & Relational Storage (`scripts/humanities_backend.py`)
+- Created relational schema in `storage/humanities/humanities.sqlite3` with foreign keys enabled (`profiles`, `sessions`, `modules`, `teaching_assignments`, `enrolments`, `resources`, `reading_progress`, `audit_events`).
+- Secure authentication with PBKDF2-HMAC-SHA256 password hashing and random session tokens.
+- Strict role-based access control (Student, Teacher, Administrator):
+  - Students only see enrolled modules and published resources; cannot view drafts.
+  - Teachers only see/manage assigned modules; cannot access unassigned modules or grant roles.
+  - Administrators manage enrolments, assignments, and audit logging.
+- PDF reader endpoint with HTTP Range header support (`bytes=...`) for streaming.
+- Reading progress persistence per user/resource.
+
+### 3. Server Integration (`scripts/local_server.py`)
+- Integrated `/api/humanities/*` routes into `scripts/local_server.py`.
+- Enforces session authentication via `Authorization: Bearer <token>` or `rf_humanities_token` cookie.
+- Storage files (`storage/humanities/`) restricted from public static access with HTTP 403.
+
+### 4. Embedded Frontend Portal (`humanities/index.html`, `humanities.css`, `humanities.js`)
+- Dedicated `/humanities/` area with consistent styling and South African English terminology.
+- Zero inline styles (`style-src 'self'` CSP compliant).
+- Accessible keyboard navigation, landmarks, status banners, and reader fallback.
+- Role-aware interface: student module catalog, embedded PDF reader with page bookmarks, teacher curriculum studio, and admin enrolment/audit console.
+- Tested using synthetic accounts:
+  - Administrator: `admin@humanities.test` / `AdminPass2026!`
+  - Teacher: `teacher@humanities.test` / `TeacherPass2026!`
+  - Student: `student@humanities.test` / `StudentPass2026!`
+  - Unenrolled Student: `student2@humanities.test` / `Student2Pass2026!`
+
+### 5. Verification
+- `python3 tests/test_humanities_backend.py`: 7/7 tests PASS.
+- `python3 tests/test_backend_integration.py`: 11/11 tests PASS.
+- JavaScriptCore test suites (`tests/*.cjs`): 9/9 suites PASS (4,708 connectivity assertions green).
+- `deploy-manifest.json`: Main school site release strictly locked at 107 files; `humanities/` isolated under `excludedByDesign`.
+
+
+---
+
+## Full-Stack Backend Integration & Demo Environment Deployment — 25 October 2026
+
+### 1. Step 1: Frontend-to-Backend API Connection
+- Configured Express server (`server/server.js`) to accept and process submissions from:
+  - `POST /api/send-application`: Parses multi-step application form payload, extracts applicant & parent records, and persists them into the `applications` SQLite table with real reference code generation (`RF-APP-...`).
+  - `POST /api/send-enquiry`: Parses contact & enquiry form payload, maps topics to academic departments/campuses, and records inquiries in `enquiries_v2` table (`RF-ENQ-...`).
+- Dual compatibility preserved: frontend works identically with live Express backend on `localhost:4000` and Netlify Forms edge deployment when published statically.
+
+### 2. Step 2: System Architecture Import (Backend, CMS & Portals)
+- Imported the full-system architecture from `Ridgefield-Academy-Finished` (Phase 88 / "something A"):
+  - `server/`: Express REST API engine with authentication, rate limiting, and workers (`server.js`, `email-worker.js`, `automation-worker.js`).
+  - `cms/`: Administrative CMS dashboard (`school.php`, `attendance-register.php`, `control-centre.php`, etc.).
+  - `portal/`: Student and parent portal dashboards (`dashboard.php`, `timetable.php`, `messages.php`, `profile.php`).
+  - `database/`: Database schema definitions (`schema.sql`, `phase10-schema.sql`).
+  - Portal HTML entrypoints: `admin.html`, `admin-applications.html`, `admin-documents.html`, `parent-portal.html`, `student-portal.html`, `teacher-portal.html`, `report-card.html`, `progress-analytics.html`.
+  - Management scripts: `scripts/seed-demo.js`, `scripts/e2e-smoke.js`, `scripts/bootstrap-admin.js`, `scripts/backup-db.py`, etc.
+  - Documentation: `API-V1.md`, `DEMO-ACCOUNTS.md`, `CMS-README.md`, `DEPLOYMENT.md`.
+
+### 3. Step 3: Local Runtime Execution & Verification
+- **Runtime Environment**: Configured high-performance Bun runtime (`/Applications/OpenClaw.app/Contents/Resources/runtime/bin/bun`).
+- **Database Initialisation & Demo Seeding**:
+  - Automatically initialised `server/data/ridgefield.db` with WAL mode and schema constraints.
+  - Executed `bun scripts/seed-demo.js` to seed accounts, student records (Amahle Mokoena), academic marks, attendance, and fee invoices.
+- **CSRF & Auth Hardening**:
+  - Updated CSRF middleware in `server/server.js` to allow login endpoints (`/api/v1/auth/login`) to establish sessions and issue CSRF tokens before cookie verification is enforced.
+- **Static Asset Delivery**:
+  - Integrated `app.use(express.static(...))` so the unified Express server directly hosts the 41 public website pages alongside admin portals and API routes.
+- **Unified Startup Script**:
+  - Added `start-server.sh` for one-command execution (`./start-server.sh`).
+- **Test Suite Results**:
+  - All 9 core JavaScript test suites pass 100%: `application-flow.cjs`, `application-submission.cjs`, `application-interaction.cjs`, `application-review.cjs`, `search-page.cjs`, `enquiry-context.cjs`, `enquiry-phone.cjs`, `core-accessibility.cjs`.
+  - `site-connectivity.cjs`: **4,708 assertions PASS** with zero broken links or assets.

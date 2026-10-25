@@ -1,0 +1,203 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex,nofollow">
+  <meta name="theme-color" content="#18372f">
+  <title>Humanities Learning Portal | Ridgefield Academy</title>
+  <link rel="icon" href="../assets/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="humanities.css">
+</head>
+<body class="hm-body">
+  <a href="#main-content" class="hm-skip-link">Skip to main content</a>
+
+  <header class="hm-header">
+    <div class="hm-brand">
+      <h1 class="hm-brand-title">Humanities Learning Portal</h1>
+      <span class="hm-brand-tag">Academic Portal</span>
+    </div>
+    <div id="hmUserNav" class="hm-user-nav">
+      <div class="hm-user-badge">
+        <span id="hmUserDisplayName">Not signed in</span>
+        (<span id="hmUserRoleBadge">GUEST</span>)
+      </div>
+      <button type="button" id="hmLogoutBtn" class="hm-btn hm-btn-secondary hm-btn-sm">Sign out</button>
+    </div>
+  </header>
+
+  <div id="hmApp">
+    <!-- 1. Sign-In Section (Visible when not authenticated) -->
+    <div id="hmLoginSection" class="hm-main">
+      <div class="hm-card">
+        <h2>Sign in to the Humanities Portal</h2>
+        <p>Access authorized syllabus study guides, textbook readers, and teaching resources.</p>
+        
+        <div id="hmLoginError" class="hm-alert hm-alert-danger hm-hidden" role="alert"></div>
+
+        <form id="hmLoginForm">
+          <div class="hm-form-group">
+            <label for="hmLoginEmail">Email Address</label>
+            <input type="email" id="hmLoginEmail" class="hm-input" required autocomplete="email" placeholder="e.g. student@humanities.test">
+          </div>
+          <div class="hm-form-group">
+            <label for="hmLoginPassword">Password</label>
+            <input type="password" id="hmLoginPassword" class="hm-input" required autocomplete="current-password">
+          </div>
+          <button type="submit" class="hm-btn hm-btn-primary">Sign In</button>
+        </form>
+
+        <div class="hm-alert hm-alert-info">
+          <strong>Test Environment Accounts:</strong><br>
+          Student: <code>student@humanities.test</code> / <code>StudentPass2026!</code><br>
+          Teacher: <code>teacher@humanities.test</code> / <code>TeacherPass2026!</code><br>
+          Administrator: <code>admin@humanities.test</code> / <code>AdminPass2026!</code>
+        </div>
+      </div>
+    </div>
+
+    <!-- 2. Authenticated Portal Section -->
+    <div id="hmPortalSection" class="hm-hidden">
+      <!-- Navigation Tabs -->
+      <nav id="hmNavBar" class="hm-nav-bar" aria-label="Portal Navigation">
+        <button type="button" id="tabDashboard" class="hm-nav-btn" aria-selected="true">My Enrolled Modules</button>
+        <button type="button" id="tabTeaching" class="hm-nav-btn hm-hidden" aria-selected="false">Teaching Studio</button>
+        <button type="button" id="tabAdmin" class="hm-nav-btn hm-hidden" aria-selected="false">Administration &amp; Audit</button>
+      </nav>
+
+      <main id="main-content" class="hm-main">
+        <!-- View A: Dashboard (Module Catalog / Enrolled Modules) -->
+        <section id="viewDashboard" aria-labelledby="dashboardHeading">
+          <h2 id="dashboardHeading">My Academic Modules</h2>
+          <p>Select a module to view the verified reading list, prescribed texts, and study guides.</p>
+          <div id="hmModulesGrid" class="hm-grid"></div>
+        </section>
+
+        <!-- View B: Module Reading List View -->
+        <section id="viewModule" class="hm-hidden" aria-labelledby="hmModuleTitle">
+          <div class="hm-card">
+            <button type="button" id="hmBackToDashboardBtn" class="hm-btn hm-btn-secondary hm-btn-sm">&larr; Back to Modules</button>
+            <span id="hmModuleCode" class="hm-module-code"></span>
+            <h2 id="hmModuleTitle">Module Title</h2>
+            <p id="hmModuleDesc" class="hm-module-desc"></p>
+          </div>
+
+          <div class="hm-card">
+            <h3>Prescribed Reading &amp; Study Guides</h3>
+            <div id="hmModuleResourcesList"></div>
+          </div>
+        </section>
+
+        <!-- View C: Authorised Reader View -->
+        <section id="viewReader" class="hm-hidden" aria-labelledby="hmReaderTitle">
+          <div class="hm-reader-wrap">
+            <div class="hm-reader-toolbar">
+              <div>
+                <button type="button" id="hmBackToModuleBtn" class="hm-btn hm-btn-secondary hm-btn-sm">&larr; Back to Reading List</button>
+                <strong id="hmReaderTitle">Resource Reader</strong>
+              </div>
+              <div>
+                <label for="hmReaderPageInput">Current Page: </label>
+                <input type="number" id="hmReaderPageInput" min="1" max="1000" class="hm-input">
+                <button type="button" id="hmSaveProgressBtn" class="hm-btn hm-btn-primary hm-btn-sm">Save Bookmark</button>
+                <a id="hmReaderDownloadBtn" href="#" class="hm-btn hm-btn-secondary hm-btn-sm hm-hidden" download>Download PDF</a>
+              </div>
+            </div>
+            <div id="hmProgressStatus" class="hm-alert hm-alert-info"></div>
+            <iframe id="hmReaderFrame" class="hm-reader-frame" title="Authorized PDF Document Viewer"></iframe>
+          </div>
+        </section>
+
+        <!-- View D: Teaching Studio (Teacher / Admin Only) -->
+        <section id="viewTeaching" class="hm-hidden" aria-labelledby="teachingHeading">
+          <h2 id="teachingHeading">Teaching &amp; Curriculum Studio</h2>
+          <p>Upload drafts, inspect study guides, and publish verified resources to assigned modules.</p>
+
+          <div id="hmTeachingStatusAlert" class="hm-alert hm-hidden" role="alert"></div>
+
+          <div class="hm-card">
+            <h3>Add New Curriculum Resource</h3>
+            <form id="hmUploadResourceForm">
+              <div class="hm-form-group">
+                <label for="hmTeachingModuleSelect">Assigned Module</label>
+                <select id="hmTeachingModuleSelect" class="hm-select" required></select>
+              </div>
+              <div class="hm-form-group">
+                <label for="hmUploadTitle">Resource Title</label>
+                <input type="text" id="hmUploadTitle" class="hm-input" required placeholder="e.g. Unit 3 Cognitive Development Study Guide">
+              </div>
+              <div class="hm-form-group">
+                <label for="hmUploadAuthor">Author / Department</label>
+                <input type="text" id="hmUploadAuthor" class="hm-input" placeholder="e.g. Department of Humanities">
+              </div>
+              <div class="hm-form-group">
+                <label for="hmUploadYear">Academic Year</label>
+                <input type="text" id="hmUploadYear" class="hm-input" value="2026">
+              </div>
+              <div class="hm-form-group">
+                <label>
+                  <input type="checkbox" id="hmUploadAutoPublish" value="1">
+                  Publish immediately (otherwise saved as draft)
+                </label>
+              </div>
+              <button type="submit" class="hm-btn hm-btn-primary">Create Curriculum Resource</button>
+            </form>
+          </div>
+        </section>
+
+        <!-- View E: Administration Console (Admin Only) -->
+        <section id="viewAdmin" class="hm-hidden" aria-labelledby="adminHeading">
+          <h2 id="adminHeading">Administrator Console &amp; Audit Log</h2>
+          <p>Manage student enrolments, teacher module assignments, and review security audit events.</p>
+
+          <div id="hmAdminStatusAlert" class="hm-alert hm-hidden" role="alert"></div>
+
+          <div class="hm-card">
+            <h3>Manage Student Enrolment</h3>
+            <form id="hmAdminEnrolForm">
+              <div class="hm-form-group">
+                <label for="hmAdminStudentId">Student User ID</label>
+                <input type="number" id="hmAdminStudentId" class="hm-input" required value="4">
+              </div>
+              <div class="hm-form-group">
+                <label for="hmAdminModuleId">Module ID</label>
+                <input type="number" id="hmAdminModuleId" class="hm-input" required value="1">
+              </div>
+              <div class="hm-form-group">
+                <label for="hmAdminEnrolStatus">Status</label>
+                <select id="hmAdminEnrolStatus" class="hm-select">
+                  <option value="active">Active</option>
+                  <option value="suspended">Suspended</option>
+                  <option value="completed">Completed</option>
+                </select>
+              </div>
+              <button type="submit" class="hm-btn hm-btn-primary">Update Enrolment</button>
+            </form>
+          </div>
+
+          <div class="hm-card">
+            <h3>Recent Security &amp; Activity Audit Log</h3>
+            <table class="hm-table">
+              <thead>
+                <tr>
+                  <th scope="col">Timestamp</th>
+                  <th scope="col">Actor</th>
+                  <th scope="col">Action</th>
+                  <th scope="col">Metadata</th>
+                </tr>
+              </thead>
+              <tbody id="hmAdminAuditTableBody"></tbody>
+            </table>
+          </div>
+        </section>
+      </main>
+    </div>
+  </div>
+
+  <footer class="hm-footer">
+    <p>&copy; 2026 Ridgefield Academy. Humanities Academic Division. All rights reserved.</p>
+  </footer>
+
+  <script src="humanities.js"></script>
+</body>
+</html>

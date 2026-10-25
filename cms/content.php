@@ -1,0 +1,9 @@
+<?php
+require __DIR__.'/config.php';require_role(['admin']);$settings=read_json('settings');$news=read_json('news');
+if($_SERVER['REQUEST_METHOD']==='POST'){check_csrf();$a=$_POST['action']??'';
+if($a==='setting'){ $key=trim($_POST['key']);$value=trim($_POST['value']);$settings[$key]=$value;write_json('settings',$settings);log_action('update','setting');flash('Website setting saved.');}
+if($a==='news'){collection_post('news');log_action('create','news');flash('News item published.');}
+redirect('content.php');}
+?><!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Website Content</title><link rel="stylesheet" href="cms.css"><style>.wrap{max-width:1100px;margin:auto;padding:28px}.card{background:#fff;border:1px solid #ddd;border-radius:14px;padding:20px;margin-bottom:18px}input,textarea{width:100%;box-sizing:border-box;margin:5px 0 12px;padding:10px}</style><link rel="stylesheet" href="assets/dynamic-site.css">
+</head><body class="rf-dynamic"><div class="wrap"><p><a href="control-centre.php">← Control Centre</a></p><h1>Website Content</h1><div class="card"><h2>Site setting</h2><form method="post"><input type="hidden" name="csrf" value="<?=h(csrf())?>"><input type="hidden" name="action" value="setting"><label>Key<input name="key" placeholder="homepage_tagline" required></label><label>Value<textarea name="value" rows="4" required></textarea></label><button>Save setting</button></form></div><div class="card"><h2>Publish news</h2><form method="post"><input type="hidden" name="csrf" value="<?=h(csrf())?>"><input type="hidden" name="action" value="news"><label>Title<input name="title" required></label><label>Date<input type="date" name="date" value="<?=date('Y-m-d')?>"></label><label>Content<textarea name="body" rows="6" required></textarea></label><button>Publish news</button></form></div></div><script src="assets/dynamic-site.js"></script>
+</body></html>

@@ -46,3 +46,8 @@
 /* Phase 57 — use the supplied Cambridge artwork wherever the legacy 5509 image was shown. */
 .page-academics .academic-image{content:url("2027.png");object-fit:contain;background:#fff;padding:2rem}
 .page-academics .page-hero:after{background-image:url("2027.png");background-repeat:no-repeat;background-size:min(70%,600px) auto;background-position:center;opacity:.12}
+
+/* Give every desktop news category more clearance from the timeline. */
+@media(min-width:701px){
+  .news-stream .stream-marker{position:relative;left:-24px}
+}

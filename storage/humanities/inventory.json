@@ -1,0 +1,132 @@
+{
+  "notice": "Internal source inventory for Humanities Learning Portal. Retain internally; do not publish Drive links or personal addresses in public frontend.",
+  "updated_at": "2026-10-25T21:00:00Z",
+  "modules": [
+    {
+      "code": "EARH3724",
+      "provisional_name": "EARH3724 Study & Reader Module",
+      "academic_years": ["2025", "2026"],
+      "status": "draft"
+    },
+    {
+      "code": "PSPE3724",
+      "provisional_name": "PSPE3724 Personality Psychology Module",
+      "academic_years": ["2026"],
+      "status": "draft"
+    },
+    {
+      "code": "EPFM3724",
+      "provisional_name": "EPFM3724 Performance Management Module",
+      "academic_years": ["2026"],
+      "status": "draft"
+    },
+    {
+      "code": "PSTH3724",
+      "provisional_name": "PSTH3724 Helping Process & Therapy Module",
+      "academic_years": ["2026"],
+      "status": "draft"
+    }
+  ],
+  "resources": [
+    {
+      "id": "res-001",
+      "source_filename": "PRESCRIBED BOOK-PERFORMANCE MANAGEMENT.pdf",
+      "source_type": "email_attachment",
+      "suggested_module": "EPFM3724",
+      "academic_year": "2026",
+      "rights_status": "unverified",
+      "publication_status": "draft"
+    },
+    {
+      "id": "res-002",
+      "source_filename": "Reader 2.pdf",
+      "source_type": "email_attachment",
+      "suggested_module": "unassigned",
+      "academic_year": "2026",
+      "rights_status": "unverified",
+      "publication_status": "draft"
+    },
+    {
+      "id": "res-003",
+      "source_filename": "2025 EARH 3724 STUDY GUIDE 20250726.pdf",
+      "source_type": "email_attachment",
+      "suggested_module": "EARH3724",
+      "academic_year": "2025",
+      "rights_status": "unverified",
+      "publication_status": "draft",
+      "note": "Strictly marked 2025 academic year; do not present as 2026"
+    },
+    {
+      "id": "res-004",
+      "source_filename": "PSPE3724 2026 Study Guide ON BB.pdf",
+      "source_type": "email_attachment",
+      "suggested_module": "PSPE3724",
+      "academic_year": "2026",
+      "rights_status": "unverified",
+      "publication_status": "draft"
+    },
+    {
+      "id": "res-005",
+      "source_filename": "EPFM3724_Study Guide 2026 PM.pdf",
+      "source_type": "email_attachment",
+      "suggested_module": "EPFM3724",
+      "academic_year": "2026",
+      "rights_status": "unverified",
+      "publication_status": "draft"
+    },
+    {
+      "id": "res-006",
+      "source_filename": "Study Guide 2026 TL - PSTH3724_copy.pdf",
+      "source_type": "email_attachment",
+      "suggested_module": "PSTH3724",
+      "academic_year": "2026",
+      "rights_status": "unverified",
+      "publication_status": "draft"
+    },
+    {
+      "id": "res-007",
+      "source_filename": "READER 1 Egan's helping process model.pdf",
+      "source_type": "email_attachment",
+      "suggested_module": "PSTH3724",
+      "academic_year": "2026",
+      "rights_status": "unverified",
+      "publication_status": "draft"
+    },
+    {
+      "id": "res-008",
+      "source_filename": "EARH3724 Reader.pdf",
+      "source_type": "linked_drive_resource",
+      "suggested_module": "EARH3724",
+      "academic_year": "2026",
+      "rights_status": "unverified",
+      "publication_status": "draft"
+    },
+    {
+      "id": "res-009",
+      "source_filename": "EARH Textbook.pdf",
+      "source_type": "linked_drive_resource",
+      "suggested_module": "EARH3724",
+      "academic_year": "2026",
+      "rights_status": "unverified",
+      "publication_status": "draft"
+    },
+    {
+      "id": "res-010",
+      "source_filename": "MariaDamianovaE - Personality Psychology 2nd EDITION.pdf",
+      "source_type": "linked_drive_resource",
+      "suggested_module": "PSPE3724",
+      "academic_year": "2026",
+      "rights_status": "unverified",
+      "publication_status": "draft"
+    },
+    {
+      "id": "res-011",
+      "source_filename": "Talk Therapy Toolkit (Soft Copy) copy.pdf",
+      "source_type": "linked_drive_resource",
+      "suggested_module": "PSTH3724",
+      "academic_year": "2026",
+      "rights_status": "unverified",
+      "publication_status": "draft"
+    }
+  ]
+}
