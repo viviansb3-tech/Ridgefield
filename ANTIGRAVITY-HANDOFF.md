@@ -1061,3 +1061,15 @@ User requested book hosting and embedded administration with separate student an
 - Header hides the tagline below 1600px to reserve room for navigation and Apply now. Student Life does not wrap.
 - Shared navigation stylesheet URLs refreshed across pages.
 - Verification: all four application suites passed under Node (flow, interaction, review, submission). Connectivity suite passed 4,708 assertions. These are automated source/mock checks, not evidence of live form delivery. No real application submitted and no production deployment performed.
+
+## Full-page layout and backend integration — 25 October 2026
+
+User requests full-page layouts like the home page and active backend help. Shared CSS now removes the browser's default body margin on every public page, expands outer page/hero backgrounds to the viewport and aligns pathway hero content with the home container. Forms retain a readable 1240px maximum. Keep work local; no production connection or deployment authorised for this integration.
+
+### Concrete backend integration contract
+- The current static preview cannot handle POST requests. `assets/public-application.js` calls POST `/api/send-application`; `assets/public-enquiry.js` calls POST `/api/send-enquiry` on localhost.
+- Both send URL-encoded form fields, expect JSON `{ "ok": true }` on success or a non-2xx JSON `{ "ok": false, "error": "Safe user-facing explanation" }` on failure. Match the existing form field names in apply.html/contact.html, including hidden reference and summary fields. Validate authoritative fields server-side; never trust the summary or client reference as proof of receipt.
+- Implement a local server serving these same static files plus these endpoints. Persist validated submissions atomically in private storage outside the served directory, with a server receipt identifier, rate limiting, length limits and duplicate-request handling. Default local mode must capture test submissions without sending email. Make that capture-only status explicit to testers; do not claim school delivery.
+- Add integration tests for malformed input, missing required fields, duplicate retries, storage failure and successful durable receipt. Switch frontend success only after durable acceptance. Actual email delivery needs configured credentials and separate verification; do not put credentials in browser code or Git.
+- For books and accounts, use HUMANITIES-BACKEND-HANDOFF.md. Reuse the notebook's existing authentication design where applicable, but do not wire this local site to production. Students must never gain teacher access by choosing a role in the browser. Use synthetic accounts for local integration tests.
+- Please record implementation files, local start command, test results and blockers here so Codex can verify the browser-to-backend flow. Backend is still pending; this note is a contract, not a completion claim.

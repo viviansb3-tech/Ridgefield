@@ -840,3 +840,16 @@ html.rf-search-open{overflow:hidden}
 }
 .rf-apply-paths > .rf-apply-path > strong,
 .rf-apply-paths > .rf-apply-path > span { display:block; margin:0; line-height:1.4; }
+
+/* Full-page canvas shared by every public page, matching the home page. */
+html body { margin:0; width:100%; min-height:100vh; box-sizing:border-box; }
+body > main:not(.rf-apply-shell):not(.rf-contact),
+body > .pathway-hero,
+body > .page-hero,
+body > .rf-public-pathbar,
+body > footer { width:100%; max-width:none; margin-left:0; margin-right:0; box-sizing:border-box; }
+body > main.rf-apply-shell,
+body > main.rf-contact { width:100%; max-width:1240px; box-sizing:border-box; }
+body .rf-pathway-hub { width:100%; max-width:none; margin-inline:0; }
+body .pathway-hero .hero-content { width:min(92%,1240px); max-width:1240px; }
+body .pathway-hero .hero-content > .lead { max-width:800px; }
