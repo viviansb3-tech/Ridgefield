@@ -1265,6 +1265,7 @@ Verified on 26 October 2026 that `origin` is the requested `viviansb3-tech/Ridge
   - Added `<meta name="viewport" content="width=device-width,initial-scale=1">` to `netlify-forms.html`.
 - **Portal Indexation Guard**: Injected `<meta name="robots" content="noindex,nofollow">` into legacy authenticated portal templates (`parent-portal.html`, `student-portal.html`, `teacher-portal.html`, `report-card.html`, `progress-analytics.html`) to prevent search engine indexing of private or empty portal areas.
 - **Production Distribution Sync**: Executed `python3 scripts/build_dist.py` to synchronize all 123 production files declared in `deploy-manifest.json` into `dist/`.
+- **Clean Routing Additions**: Added short-URL rewrites in `_redirects` for `/connection-map`, `/learning-platform`, and `/admin` for direct extension-less navigation.
 - **Verification**:
   - 12/12 JavaScript test suites pass under both macOS JSC and Bun engines (4,850 assertions verified).
   - 11/11 Python backend integration tests pass.
@@ -1275,4 +1276,17 @@ Verified on 26 October 2026 that `origin` is the requested `viviansb3-tech/Ridge
 - **Primary School JSON-LD (`primary.html`)**: Added `EducationalOccupationalProgram` schema for Primary School Pathway (matching `cambridge.html` and `caps-secondary.html`). Aligned `BreadcrumbList` to three-stage hierarchy (Home → Academics → Primary School).
 - **Backend Test Suite Isolation (`tests/test_backend_integration.py`, `tests/test_humanities_backend.py`)**: Added `local_server.RATE_LIMIT_STORE.clear()` in `setUp()` to guarantee clean isolation between repeated test runs.
 - **Verification**: All 12 offline JavaScript suites PASS (JSC & Bun), both Python test suites PASS, and `site-connectivity.cjs` validates 4,850 assertions green.
+
+## 2026-10-27 — Agent 8: Academic Curriculum & School Editorial Fact-Check
+- **Cambridge CAIE Three-Stage Progression**: Verified 100% alignment across `cambridge.html`, `admission.html`, `syllabus.html`, and `academics.html` (Stage 1 Pre-IGCSE Grade 8, Stage 2 IGCSE Grades 9–10, Stage 3 AS & A Level Grades 11–12).
+- **DBE CAPS Phase Terminology**: Verified 100% alignment across `caps-secondary.html`, `primary.html`, `academics.html`, `caps-curriculum.html`, and `primary-curriculum.html` (Foundation Phase Grades 1–3, Intermediate Phase Grades 4–6, Senior Primary Transition Grade 7, Senior Phase Grades 8–9, FET Phase Grades 10–12).
+- **University Exemption Statutory Qualifications**: Confirmed conditional exemption language on `recognition.html` and `cambridge.html` regarding Universities South Africa (USAf) Matriculation Board requirements and individual faculty APS criteria.
+- **Dual-Campus Allocation Consistency**: Verified across all 53 HTML files that Block A (22 Maartens St) strictly houses CAPS Secondary & Primary, while Block B (25 Wilcock Rd, Noordhoek) strictly houses Cambridge International. Zero contradictions.
+- **South African / British English Orthography**:
+  - Replaced `catalog` with `catalogue` in `academics.html`.
+  - Replaced `specialized` with `specialised` in `primary.html`.
+  - Verified 100% whole-codebase compliance with South African English conventions (`programme`, `enrolment`, `personalised`, `recognised`, `honours`, `centre`).
+- **Staff Leadership Consistency**: Verified matching roles and campus designations for Dr. Elizabeth van der Westhuizen (Head of Academics & Cambridge Coordinator), Rev. J. van der Westhuizen (Principal & Pastoral Care), and Mrs. Linda Maree (Admissions & Academic Administration) across `staff.html`, `caps-team.html`, and `primary-team.html`.
+- **Validation**: 12/12 JS test suites PASS, Python tests PASS, and 4,850 connectivity assertions green.
+
 
