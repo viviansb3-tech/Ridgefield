@@ -1227,3 +1227,14 @@ The administration screen supports number/legacy-reference lookup and full appli
 Verification passed: rolled-back database assertions for parity, increasing allocation, duplicates, immutable numbers, repeat enrolment, pathway changes, year rollover and six-digit overflow; live concurrent Cambridge/CAPS/Primary submissions; concurrent retry and enrolment; backend rejection of incomplete steps; admin visibility of full questionnaire; frontend step, review, submission/receipt, session and admin-action regression tests; connectivity checks. Security advisor returned no findings. Synthetic accounts/applications/learner records were removed, while their anonymous number reservations remain permanently consumed. One real application remains. The updated Edge Function is deployed and frontend changes are served on localhost; production static-site publishing remains separate.
 
 Sources: `supabase/learner-numbers.sql` (incremental migration), updated fresh-project `supabase/schema.sql`, Edge API and frontend files listed under Active work. Tests: `tests/learner-number-database.sql`, `tests/learner-numbers-live.cjs`, `tests/admin-applications.cjs` and updated admissions tests. No files remain reserved for this batch.
+
+## Dual-Runtime Test Compatibility & Storage Hygiene — 26 October 2026
+
+- **Dual-Runtime Support**: Upgraded `tests/admin-applications.cjs` and `tests/baas-client.cjs` with conditional runtime adapters, polyfills (`URLSearchParams.size`, `Headers`, `Response.json`, `AbortSignal.timeout`), and dual VM execution hooks. All 11 offline JS test suites now execute identically and pass 100% under both the modern Bun engine (`/Applications/OpenClaw.app/Contents/Resources/runtime/bin/bun`) and macOS native JavaScriptCore (`jsc`).
+- **Test Artifact Cleanup**: Added automated `tearDownClass` handlers in `tests/test_backend_integration.py` and `tests/test_humanities_backend.py` to automatically purge temporary test JSON submissions and generated PDFs (`res-*.pdf`). Private storage directories (`storage/submissions/`, `storage/humanities/resources/`) remain pristine after test runs.
+- **Verification Results**:
+  - `bun tests/*.cjs`: 11/11 offline suites PASS (4,722 site connectivity assertions green).
+  - `jsc tests/*.cjs`: 11/11 offline suites PASS.
+  - `python3 tests/test_backend_integration.py`: 11/11 tests PASS.
+  - `python3 tests/test_humanities_backend.py`: 7/7 tests PASS.
+  - `deploy-manifest.json`: Verified 117 production files; private storage and humanities modules remain isolated under `excludedByDesign`.
