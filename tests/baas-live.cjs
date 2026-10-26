@@ -1,5 +1,9 @@
 // Runs against the isolated Ridgefield project using an explicitly seeded synthetic setup account.
 // Never runs with a real administrator's password or sends mail.
+if (typeof require === 'undefined' || typeof process === 'undefined') {
+  if (typeof print !== 'undefined') print('SKIP: baas-live.cjs requires Node/Bun runtime and test fixture');
+  quit(0);
+}
 const assert = require('node:assert/strict');
 const fs = require('node:fs'); const vm = require('node:vm');
 const fixturePath = process.env.RF_BAAS_FIXTURE || '/private/tmp/rf-baas-test.json';

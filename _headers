@@ -57,5 +57,33 @@
   Cache-Control: no-store
   X-Robots-Tag: noindex, nofollow
 
+/admin
+  Cache-Control: no-store
+  X-Robots-Tag: noindex, nofollow
+
+/connection-map*
+  Cache-Control: no-store
+  X-Robots-Tag: noindex, nofollow
+
+/student-portal*
+  Cache-Control: no-store
+  X-Robots-Tag: noindex, nofollow
+
+/parent-portal*
+  Cache-Control: no-store
+  X-Robots-Tag: noindex, nofollow
+
+/teacher-portal*
+  Cache-Control: no-store
+  X-Robots-Tag: noindex, nofollow
+
+/report-card*
+  Cache-Control: no-store
+  X-Robots-Tag: noindex, nofollow
+
+/progress-analytics*
+  Cache-Control: no-store
+  X-Robots-Tag: noindex, nofollow
+
 /supabase/*
   X-Robots-Tag: noindex, nofollow

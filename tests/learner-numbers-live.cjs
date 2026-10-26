@@ -1,4 +1,8 @@
 // Requires a disposable setup capability explicitly seeded for this test, never a real administrator.
+if (typeof require === 'undefined' || typeof process === 'undefined') {
+  if (typeof print !== 'undefined') print('SKIP: learner-numbers-live.cjs requires Node/Bun runtime and test fixture');
+  quit(0);
+}
 const fs=require('node:fs'),vm=require('node:vm'),assert=require('node:assert/strict');
 const file=process.env.RF_NUMBER_QA_FIXTURE||'/private/tmp/rf-number-qa.json';
 if (!fs.existsSync(file)) {

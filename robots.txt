@@ -4,5 +4,14 @@ Disallow: /enquiry-success.html
 Disallow: /netlify-forms.html
 Disallow: /status.html
 Disallow: /health.json
+Disallow: /admin*.html
+Disallow: /admin
+Disallow: /connection-map*
+Disallow: /student-portal*
+Disallow: /parent-portal*
+Disallow: /teacher-portal*
+Disallow: /report-card*
+Disallow: /progress-analytics*
+Disallow: /api/
 
 Sitemap: https://www.ridgefieldacademy.co.za/sitemap.xml
