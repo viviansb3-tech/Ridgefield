@@ -57,6 +57,7 @@ class BackendIntegrationTestCase(unittest.TestCase):
             except Exception: pass
 
     def setUp(self):
+        local_server.RATE_LIMIT_STORE.clear()
         conn = sqlite3.connect(local_server.DB_PATH)
         with conn:
             conn.execute("DELETE FROM submissions WHERE client_reference LIKE 'RF-APP-%' OR client_reference LIKE 'RF-ENQ-%' OR dedupe_hash IS NOT NULL")

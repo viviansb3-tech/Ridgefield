@@ -52,6 +52,7 @@ class HumanitiesBackendTestCase(unittest.TestCase):
             except Exception: pass
 
     def setUp(self):
+        local_server.RATE_LIMIT_STORE.clear()
         conn = humanities_backend.get_db()
         with conn:
             conn.execute("DELETE FROM enrolments WHERE student_id = 4")

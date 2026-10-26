@@ -1247,3 +1247,13 @@ Verified on 26 October 2026 that `origin` is the requested `viviansb3-tech/Ridge
 - Linked map from learning-platform.html and admin.html. Source mapping from current frontends, Ridgefield API and notebook local-school route. No auth/data permissions changed.
 - Shared page-loading.js/css on all 53 HTML pages, including humanities. Delayed 150ms skeleton, DOM-ready removal, history cleanup, 5-second fail-safe and reduced-motion support. It covers document loading, not every later API request. Notebook repository loading states remain owned by its chat.
 - Connectivity: 4,850 assertions passed. Loading lifecycle tests passed; browser verified admin filter and document-node drilldown. Local preview started on 8080. No production deployment.
+
+## 2026-10-27 — Page-Loading Test Dual-Runtime Parity & Comprehensive Test Suite Audit
+- **Dual-Runtime Upgrade (`tests/page-loading.cjs`)**: Added standard runtime detection and polyfill shims for `Script` / `checkSyntax` and `assert.deepEqual`. The loading lifecycle suite now executes natively and passes with zero dependencies on both macOS JavaScriptCore (`jsc`) and the Bun runtime.
+- **Unified Test Matrix (100% Green Across All Engines)**:
+  - `jsc tests/*.cjs`: 12/12 test suites PASS (`application-flow`, `application-interaction`, `application-review`, `application-submission`, `core-accessibility`, `enquiry-context`, `enquiry-phone`, `search-page`, `site-connectivity`, `admin-applications`, `baas-client`, `page-loading`).
+  - `bun tests/*.cjs`: 12/12 test suites PASS.
+  - `python3 tests/test_backend_integration.py`: 11/11 tests PASS.
+  - `python3 tests/test_humanities_backend.py`: 7/7 tests PASS.
+  - Site Connectivity: **4,850 assertions verified** with zero broken internal links, assets, or missing landmarks across all 53 HTML files.
+- **Production Asset Manifest**: `deploy-manifest.json` verified with exactly 123 production files (including `connection-map.html`, `learning-platform.html`, and their dedicated assets); zero missing files, and all private databases and test files remain strictly excluded by design.
