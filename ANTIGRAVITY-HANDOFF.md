@@ -1238,3 +1238,6 @@ Sources: `supabase/learner-numbers.sql` (incremental migration), updated fresh-p
   - `python3 tests/test_backend_integration.py`: 11/11 tests PASS.
   - `python3 tests/test_humanities_backend.py`: 7/7 tests PASS.
   - `deploy-manifest.json`: Verified 117 production files; private storage and humanities modules remain isolated under `excludedByDesign`.
+# GitHub sharing between computers
+
+Verified on 26 October 2026 that `origin` is the requested `viviansb3-tech/Ridgefield` GitHub repository and the local `main` matches `origin/main`. Added the root README with cloning, pull-before-edit, commit/push-before-switching, local preview and shared-backend instructions. Credentials and local private storage remain excluded. GitHub code synchronization is distinct from website and Supabase deployment.
