@@ -15,10 +15,10 @@ table{width:100%;border-collapse:collapse}th,td{text-align:left;padding:10px;bor
 <section id="login" class="login"><div class="portal-brand-logo"><img src="assets/2026.png" alt="Ridgefield Academy" width="594" height="168" decoding="async"></div>
 <div class="muted">RIDGEFIELD ACADEMY</div><h1>Student Portal</h1>
 <p class="muted">Sign in to view your private Ridgefield academic information.</p>
-<div class="panel"><label>Email</label><input id="email" type="email" autocomplete="username"><label>Password</label><input id="password" type="password" autocomplete="current-password"><button class="btn" onclick="login()">Sign in</button><div id="error"></div></div>
+<div class="panel"><label for="email">Email</label><input id="email" type="email" autocomplete="username"><label for="password">Password</label><input id="password" type="password" autocomplete="current-password"><button class="btn" onclick="login()">Sign in</button><div id="error"></div></div>
 </section>
 <section id="dash" class="dash hidden">
-<div style="display:flex;justify-content:space-between;gap:15px;align-items:end;flex-wrap:wrap"><div><div class="muted">PRIVATE STUDENT AREA</div><h1 id="name"></h1><p id="path" class="muted"></p></div><button class="btn" onclick="logout()">Sign out</button></div>
+<div style="display:flex;justify-content:space-between;gap:15px;align-items:end;flex-wrap:wrap"><div><div class="muted">PRIVATE STUDENT AREA</div><h2 id="name"></h2><p id="path" class="muted"></p></div><button class="btn" onclick="logout()">Sign out</button></div>
 <div class="grid"><div class="card">Student reference<b id="ref">—</b></div><div class="card">Grade<b id="grade">—</b></div><div class="card">Campus<b id="campus">—</b></div></div>
 <div class="panel"><h2>Academic Records</h2><div style="overflow:auto"><table><thead><tr><th>Subject</th><th>Assessment</th><th>Score</th><th>Term</th><th>Year</th><th>Comment</th></tr></thead><tbody id="records"></tbody></table></div></div>
 <div class="panel"><h2>Attendance</h2><div style="overflow:auto"><table><thead><tr><th>Date</th><th>Status</th><th>Note</th></tr></thead><tbody id="attendance"></tbody></table></div></div>
