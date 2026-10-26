@@ -46,3 +46,8 @@ uploads/*
 !uploads/.gitkeep
 server/uploads/*
 !server/uploads/.gitkeep
+
+# Temporary / Output Directories
+output/
+__pycache__/
+*.pyc
