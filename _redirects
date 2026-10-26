@@ -8,6 +8,9 @@
 /primary            /primary.html            200
 /contact            /contact.html            200
 /search             /search.html             200
+/connection-map     /connection-map.html     200
+/learning-platform  /learning-platform.html  200
+/admin              /admin.html              200
 /cambridge-application.html /apply.html       301
 /health             /health.json             200
 /status             /status.html             200
