@@ -44,6 +44,13 @@ class MockSocket:
 
 
 class HumanitiesBackendTestCase(unittest.TestCase):
+    @classmethod
+    def tearDownClass(cls):
+        import glob, os
+        for p in glob.glob(str(humanities_backend.RESOURCE_DIR / "res-*.pdf")):
+            try: os.remove(p)
+            except Exception: pass
+
     def setUp(self):
         conn = humanities_backend.get_db()
         with conn:

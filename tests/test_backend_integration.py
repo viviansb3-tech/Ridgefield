@@ -46,6 +46,22 @@ class MockSocket:
 
 
 class BackendIntegrationTestCase(unittest.TestCase):
+    @classmethod
+    def tearDownClass(cls):
+        import glob, os
+        for p in glob.glob(str(local_server.APP_DIR / "*.json")):
+            try: os.remove(p)
+            except Exception: pass
+        for p in glob.glob(str(local_server.ENQ_DIR / "*.json")):
+            try: os.remove(p)
+            except Exception: pass
+
+    def setUp(self):
+        conn = sqlite3.connect(local_server.DB_PATH)
+        with conn:
+            conn.execute("DELETE FROM submissions WHERE client_reference LIKE 'RF-APP-%' OR client_reference LIKE 'RF-ENQ-%' OR dedupe_hash IS NOT NULL")
+        conn.close()
+
     def dispatch_request(self, method: str, path: str, headers: dict = None, body: bytes = b"", client_ip: str = "127.0.0.1"):
         if headers is None:
             headers = {}
@@ -268,6 +284,16 @@ class BackendIntegrationTestCase(unittest.TestCase):
         self.assertIn("Consent to process enquiry data", res.get("error"))
 
     def test_submissions_review_endpoint(self):
+        self.post_form("/api/send-enquiry", {
+            "enquiry-reference": "RF-ENQ-REVIEW-SEED",
+            "name": "Review Seeder",
+            "email": "seeder@example.com",
+            "phone": "071 234 5678",
+            "enquiry-type": "General",
+            "message": "Seeding for review endpoint test",
+            "privacy-consent": "Agreed",
+            "bot-field": ""
+        })
         status, _, _, res = self.dispatch_request("GET", "/api/submissions")
         self.assertEqual(status, 200)
         self.assertTrue(res.get("ok"))

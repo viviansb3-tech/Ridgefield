@@ -52,7 +52,7 @@ EMAIL_REGEX = re.compile(r"^[^@\s]+@[^@\s]+\.[^@\s]+$")
 PHONE_REGEX = re.compile(r"^[\d\s\+\-\(\)]{7,25}$")
 DATE_REGEX = re.compile(r"^\d{4}-\d{2}-\d{2}$")
 
-VALID_PATHWAYS = {"Cambridge", "CAPS Secondary", "Primary"}
+VALID_PATHWAYS = {"Cambridge", "CAPS Secondary", "Primary", "Cambridge International"}
 VALID_ENQUIRY_TYPES = {
     "Admissions", "Fees", "Academics", "Cambridge", 
     "CAPS Secondary", "Primary", "Book Lists", "General",
@@ -282,6 +282,9 @@ class RidgefieldRequestHandler(http.server.SimpleHTTPRequestHandler):
         guardian_email = data.get("guardian-email", "").strip()
         guardian_phone = data.get("guardian-phone", "").strip()
         pathway = data.get("pathway", "").strip()
+        if pathway == "Cambridge International":
+            pathway = "Cambridge"
+            data["pathway"] = "Cambridge"
         campus = data.get("campus", "").strip()
         grade = data.get("grade-applying", "").strip()
         privacy = data.get("privacy-consent", "").strip().lower()
