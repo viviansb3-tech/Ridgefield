@@ -1258,6 +1258,19 @@ Verified on 26 October 2026 that `origin` is the requested `viviansb3-tech/Ridge
   - Site Connectivity: **4,850 assertions verified** with zero broken internal links, assets, or missing landmarks across all 53 HTML files.
 - **Production Asset Manifest**: `deploy-manifest.json` verified with exactly 123 production files (including `connection-map.html`, `learning-platform.html`, and their dedicated assets); zero missing files, and all private databases and test files remain strictly excluded by design.
 
+## 2026-10-27 — Metadata Hygiene, Portal Protection & Distribution Synchronization
+- **Structural Accessibility Parity**:
+  - Enclosed redirect shims (`admin-applications.html`, `admin-documents.html`) with `<main><h1>Ridgefield Administration</h1>...</main>` landmarks for screen reader and validator compliance.
+  - Added canonical link and meta description to `learning-platform.html`.
+  - Added `<meta name="viewport" content="width=device-width,initial-scale=1">` to `netlify-forms.html`.
+- **Portal Indexation Guard**: Injected `<meta name="robots" content="noindex,nofollow">` into legacy authenticated portal templates (`parent-portal.html`, `student-portal.html`, `teacher-portal.html`, `report-card.html`, `progress-analytics.html`) to prevent search engine indexing of private or empty portal areas.
+- **Production Distribution Sync**: Executed `python3 scripts/build_dist.py` to synchronize all 123 production files declared in `deploy-manifest.json` into `dist/`.
+- **Verification**:
+  - 12/12 JavaScript test suites pass under both macOS JSC and Bun engines (4,850 assertions verified).
+  - 11/11 Python backend integration tests pass.
+  - 7/7 Python humanities access control tests pass.
+  - Zero structural, landmark, or canonical link defects detected across public root pages.
+
 ## 2026-10-27 — Primary Pathway Schema Parity & Test Suite Isolation
 - **Primary School JSON-LD (`primary.html`)**: Added `EducationalOccupationalProgram` schema for Primary School Pathway (matching `cambridge.html` and `caps-secondary.html`). Aligned `BreadcrumbList` to three-stage hierarchy (Home → Academics → Primary School).
 - **Backend Test Suite Isolation (`tests/test_backend_integration.py`, `tests/test_humanities_backend.py`)**: Added `local_server.RATE_LIMIT_STORE.clear()` in `setUp()` to guarantee clean isolation between repeated test runs.
