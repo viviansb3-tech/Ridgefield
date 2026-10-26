@@ -30,6 +30,7 @@
   };
 
   const DRAFT_KEY="rf_application_draft";
+  const REQUEST_KEY="rf_application_request_id";
   let current=1, pathway="", submitted=false, dirty=false;
   const sections=[...document.querySelectorAll("[data-app-step]")];
   const progress=[...document.querySelectorAll(".rf-apply-step")];
@@ -68,7 +69,7 @@
   }
 
   function clearDraft(){
-    try{sessionStorage.removeItem(DRAFT_KEY)}catch(e){}
+    try{sessionStorage.removeItem(DRAFT_KEY);sessionStorage.removeItem(REQUEST_KEY)}catch(e){}
   }
 
   function updateProgress(n){
@@ -220,7 +221,11 @@
   }
 
   function buildSummary(){
-    if(!refInput.value)refInput.value=RidgefieldWorkflow.makeRef("RF-APP");
+    if(!refInput.value){
+      try{refInput.value=sessionStorage.getItem(REQUEST_KEY)||""}catch(e){}
+      if(!refInput.value)refInput.value=RidgefieldWorkflow.makeRef("RF-APP");
+      try{sessionStorage.setItem(REQUEST_KEY,refInput.value)}catch(e){}
+    }
     const rows=[
       ["Application reference",refInput.value],
       ["Pathway",pathway],["Campus",hiddenCampus.value],["Grade / level",grade.value],
@@ -261,7 +266,7 @@
   });
 
   function isLocalMailMode(){
-    return location.hostname==="localhost" || location.hostname==="127.0.0.1";
+    return !!window.RidgefieldBaas?.enabled;
   }
 
   async function sendApplicationLocally(){
@@ -275,7 +280,8 @@
     try{
       const body=new URLSearchParams();
       new FormData(form).forEach((value,key)=>body.append(key,String(value)));
-      const response=await fetch("/api/send-application",{
+      if(!window.RidgefieldBaas?.enabled)throw new Error("The admissions service is unavailable. Please reload and try again.");
+      const response=await window.RidgefieldBaas.request("/send-application",{
         method:"POST",
         body,
         headers:{"Accept":"application/json"}
@@ -285,10 +291,12 @@
       if(!response.ok || !result.ok){
         throw new Error(result.error || "The application could not be sent.");
       }
+      const permanentNumber=result.studentNumber||result.reference;
+      if(!/^RIDC\d{9,}$/.test(permanentNumber||""))throw new Error("The service did not confirm a permanent learner number. Please try again.");
       submitted=true;
       clearDraft();
-      try{sessionStorage.setItem("rf_last_reference",refInput.value);sessionStorage.setItem("rf_last_app_reference",refInput.value);}catch(e){}
-      location.href="/application-success.html?ref="+encodeURIComponent(refInput.value);
+      try{sessionStorage.setItem("rf_last_reference",permanentNumber);sessionStorage.setItem("rf_last_app_reference",permanentNumber);sessionStorage.setItem("rf_last_student_number",permanentNumber);}catch(e){}
+      location.href="/application-success.html?ref="+encodeURIComponent(permanentNumber);
     }catch(err){
       submitted=false;
       if(submit){
@@ -297,13 +305,14 @@
         submit.textContent="Send application";
       }
       setStatus(
-        "The application was not sent. "+(err?.message||"Please check the local mail server and try again."),
+        "The application was not sent. "+(err?.message||"Please try again or contact the school."),
         submit
       );
     }
   }
 
   form.addEventListener("submit",async e=>{
+    e.preventDefault();
     if(form.querySelector('[data-submit-lock]')){e.preventDefault();return}
     // Enter advances the current step; only the review step can send.
     if(current<6){
@@ -323,18 +332,10 @@
     buildSummary();
 
     if(isLocalMailMode()){
-      e.preventDefault();
       await sendApplicationLocally();
       return;
     }
-
-    // Deployment fallback: keep the existing Netlify Forms submission path.
-    submitted=true;
-    try{sessionStorage.setItem("rf_last_reference",refInput.value);sessionStorage.setItem("rf_last_app_reference",refInput.value);}catch(e){}
-    clearDraft();
-    const submit=form.querySelector('button[type="submit"]');
-    if(submit){submit.disabled=true;submit.dataset.submitLock="true";submit.textContent="Sending…"}
-    form.action="/application-success.html?ref="+encodeURIComponent(refInput.value);
+    setStatus("The admissions service is unavailable. Your details are still here. Please reload and try again.");
   });
 
   window.addEventListener("pageshow",()=>{

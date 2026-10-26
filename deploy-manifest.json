@@ -1,6 +1,6 @@
 {
   "profile": "static-public-production",
-  "fileCount": 107,
+  "fileCount": 117,
   "excludedByDesign": [
     "server.js",
     "package.json",
@@ -23,7 +23,9 @@
     "scratch/",
     "logs/",
     "deploy-manifest.json",
-    "*.zip"
+    "*.zip",
+    "supabase/",
+    "output/"
   ],
   "files": [
     "404.html",
@@ -70,6 +72,7 @@
     "assets/images/5509.jpg",
     "assets/images/6312.jpg",
     "assets/images/6312.webp",
+    "assets/images/ridgefield-community-modern.jpg",
     "assets/js/main.js",
     "assets/logos/Logo no text.png",
     "assets/logos/Ridgefield White.png",
@@ -132,6 +135,15 @@
     "student-life.html",
     "subjects.html",
     "syllabus.html",
-    "tuition.html"
+    "tuition.html",
+    "admin.html",
+    "admin-setup.html",
+    "admin-applications.html",
+    "admin-documents.html",
+    "assets/rf-admin.css",
+    "assets/rf-admin.js",
+    "assets/rf-admin-setup.js",
+    "assets/rf-baas.js",
+    "assets/rf-baas-config.js"
   ]
 }

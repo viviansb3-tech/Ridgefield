@@ -1195,3 +1195,35 @@ Fulfilled the initial implementation phases of `HUMANITIES-BACKEND-HANDOFF.md` w
 - **Test Suite Results**:
   - All 9 core JavaScript test suites pass 100%: `application-flow.cjs`, `application-submission.cjs`, `application-interaction.cjs`, `application-review.cjs`, `search-page.cjs`, `enquiry-context.cjs`, `enquiry-phone.cjs`, `core-accessibility.cjs`.
   - `site-connectivity.cjs`: **4,708 assertions PASS** with zero broken links or assets.
+
+## Active work — 26 October 2026 Supabase integration
+
+Codex is connecting the public application and enquiry forms and the school administration pages to the new Ridgefield Academy Supabase project. Reserved files: assets/rf-baas*.js, assets/rf-admin.js, assets/public-application.js, assets/public-enquiry.js, apply.html, contact.html, admin*.html, _headers, scripts/local_server.py, supabase/, tests/baas*. Current unrelated index.html, release manifest and hero-image edits will be preserved. No existing personal records will be imported automatically.
+
+## Completed — 26 October 2026 Supabase core BaaS
+
+The separate Ridgefield Academy project `cgknuthrxnyfxncvmelo` is active; the paused pre-existing project was preserved. Database schema/RLS and the checked `ridgefield-api` Edge Function are deployed. Public application/enquiry forms use the live cloud backend and retain server-generated receipts. Central administration now uses Supabase Auth and current staff membership rather than a shared admin key; admissions/document aliases lead to the same interface. Added enquiry review, learner register persistence, content drafts/public API and private staff document upload/review/short-lived viewing links. Source and operational details: `supabase/README.md`.
+
+New frontend files: `assets/rf-baas-config.js`, `assets/rf-baas.js`, `assets/rf-admin.js`, `assets/rf-admin.css`, `assets/rf-admin-setup.js`, `admin-setup.html`. Updated application/enquiry handlers and their pages, admin entry pages, CSP, local source-file protections, ignore rules and the existing deployment manifest by appending the new files/exclusions. The unrelated homepage/image edits were not changed. No secrets or private account setup capabilities are in tracked source.
+
+Validation: client session/refresh checks; admissions step, interaction, review and submission checks; enquiry phone/context checks; site connectivity (4,722 assertions); TypeScript parsing; admin DOM binding checks; and actual hosted API/database/storage tests using disposable synthetic data. Direct public reads and privilege changes were denied; inactive staff lost access without waiting for their original JWT to expire. Test records, account, session and stored file were removed. Browser preview checks were blocked by the browser URL policy, so visual browser verification is outstanding. Supabase security advisory still recommends enabling leaked-password protection in Auth settings. Index notices are informational for the new database.
+
+A one-time private first-administrator setup capability is available locally. The owner must personally set the password; no invitation or other email was sent. The frontend is available on localhost, and the cloud backend is deployed; the public production website has not been redeployed. Existing PHP/student/humanities backend routes have not been migrated, and no existing personal records were imported.
+
+Active work: no files reserved after this batch.
+
+## Active work — permanent learner numbers
+
+Codex is implementing transactional permanent learner/application identifiers, Cambridge-even and CAPS/Primary-odd numbering, a reliable application-to-admin handoff and enrolment that preserves the identifier. Reserved files: supabase/schema.sql, supabase/learner-numbers.sql, supabase/functions/ridgefield-api/index.ts, assets/public-application.js, assets/public-core.js, assets/rf-admin.js, application-success.html, apply.html and related tests. Existing unrelated homepage changes remain preserved.
+
+## Completed — permanent learner/application numbers
+
+The live Supabase backend now assigns `RIDC` + original application year + an accumulating number with a minimum five-digit suffix. Cambridge suffixes are even; CAPS Secondary and Primary suffixes are odd. Allocation is database-transactional, global across pathways and years, and old numbers are never recycled. The existing real application was converted once, retaining its prior reference in `legacy_reference`; no real record was deleted. Application and learner numbers are immutable and remain the same after grade/pathway updates.
+
+Completed applications save the full questionnaire, preferred start, pathway-specific fields and document-preparation answers. Submission cannot silently fall back to Netlify/local capture or display success without a confirmed permanent number. The browser's retry key is separate from that number; retries return the same identifier. The receipt page accepts permanent-number links without session storage.
+
+The administration screen supports number/legacy-reference lookup and full application details. Administrators accept an application then choose Enrol learner. The transactional enrolment endpoint reuses the original number, creates one linked learner and marks the application Enrolled; concurrent/repeated enrolment cannot duplicate the learner. The student register uses the same identifier. Existing portal authentication was not changed; a learner number alone does not grant access to private data.
+
+Verification passed: rolled-back database assertions for parity, increasing allocation, duplicates, immutable numbers, repeat enrolment, pathway changes, year rollover and six-digit overflow; live concurrent Cambridge/CAPS/Primary submissions; concurrent retry and enrolment; backend rejection of incomplete steps; admin visibility of full questionnaire; frontend step, review, submission/receipt, session and admin-action regression tests; connectivity checks. Security advisor returned no findings. Synthetic accounts/applications/learner records were removed, while their anonymous number reservations remain permanently consumed. One real application remains. The updated Edge Function is deployed and frontend changes are served on localhost; production static-site publishing remains separate.
+
+Sources: `supabase/learner-numbers.sql` (incremental migration), updated fresh-project `supabase/schema.sql`, Edge API and frontend files listed under Active work. Tests: `tests/learner-number-database.sql`, `tests/learner-numbers-live.cjs`, `tests/admin-applications.cjs` and updated admissions tests. No files remain reserved for this batch.

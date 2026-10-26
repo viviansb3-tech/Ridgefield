@@ -33,6 +33,8 @@ storage/*.sqlite3
 storage/*.db
 storage/*.tmp
 storage/submissions/
+storage/supabase/
+supabase/.temp/
 storage/private/*.json
 storage/**/*.pdf
 storage/*.pdf

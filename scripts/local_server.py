@@ -61,7 +61,7 @@ VALID_ENQUIRY_TYPES = {
 
 FORBIDDEN_PREFIXES = (
     "storage", "database", ".git", "scripts", "tests", 
-    "server", "node_modules", ".env", "deploy-manifest.json"
+    "server", "supabase", "node_modules", ".env", "deploy-manifest.json"
 )
 
 def init_db():
@@ -220,7 +220,8 @@ class RidgefieldRequestHandler(http.server.SimpleHTTPRequestHandler):
             return
 
         # Security check: Block private and internal directories
-        clean_path = path.lstrip("/").replace("\\", "/")
+        clean_path = urllib.parse.unquote(path).lstrip("/").replace("\\", "/")
+        clean_path = os.path.normpath("/" + clean_path).lstrip("/")
         for forbidden in FORBIDDEN_PREFIXES:
             if clean_path == forbidden or clean_path.startswith(forbidden + "/"):
                 self.send_error(403, "Access to private resources is forbidden.")

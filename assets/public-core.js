@@ -230,7 +230,7 @@
     const isEnq = path.includes("enquiry-success") || docTitle.includes("Enquiry");
     let ref=p.get("ref")||"";
     if(ref){
-      if(isApp && !ref.startsWith("RF-APP")) ref="";
+      if(isApp && !/^RIDC\d{9,}$/.test(ref) && !/^RF-APP-[A-Z0-9-]+$/.test(ref)) ref="";
       if(isEnq && !ref.startsWith("RF-ENQ")) ref="";
     }
     if(!ref){

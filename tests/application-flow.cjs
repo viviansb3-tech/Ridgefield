@@ -26,7 +26,7 @@ if (typeof require !== 'undefined') {
 const source = readSource();
 const start = source.indexOf('  form.addEventListener("submit",async e=>{');
 const end = source.indexOf('\n  window.addEventListener("pageshow"', start);
-async function submit({step=6,invalidStep=0,consent=true,locked=false}={}){
+async function submit({step=6,invalidStep=0,consent=true,locked=false,service=true}={}){
   let handler;
   const visited=[];
   const context={
@@ -34,7 +34,8 @@ async function submit({step=6,invalidStep=0,consent=true,locked=false}={}){
     form:{querySelector:()=>locked?{}:null,addEventListener:(_,fn)=>{handler=fn;context.handler=fn;}},
     document:{getElementById:()=>({checked:consent})},
     showStep:n=>{context.current=n;visited.push(n)},validateStep:n=>n!==invalidStep,
-    setStatus:()=>{},buildSummary:()=>{},isLocalMailMode:()=>false,
+    setStatus:()=>{},buildSummary:()=>{},isLocalMailMode:()=>service,
+    sendApplicationLocally:async()=>{context.submitted=true},
     sessionStorage:{setItem:()=>{}},clearDraft:()=>{},encodeURIComponent
   };
   runCode(source.slice(start,end),context);
@@ -55,8 +56,8 @@ async function submit({step=6,invalidStep=0,consent=true,locked=false}={}){
   }
   result=await submit({consent:false});assert(result.event.prevented);assert(!result.context.submitted);
   result=await submit({locked:true});assert(result.event.prevented);assert.equal(result.visited.length,0);
-  result=await submit();assert(!result.event.prevented);assert(result.context.submitted);
-  assert.equal(result.context.form.action,'/application-success.html?ref=RF-TEST');
+  result=await submit();assert(result.event.prevented);assert(result.context.submitted);
+  result=await submit({service:false});assert(result.event.prevented);assert(!result.context.submitted);
   const log = typeof console !== 'undefined' && console.log ? console.log : print;
   log('PASS: Enter advances safely, invalid steps are revealed, consent is required, duplicate sends are blocked, valid review submits.');
 })().catch(error=>{

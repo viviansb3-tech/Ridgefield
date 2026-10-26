@@ -1,0 +1,18 @@
+
+*{box-sizing:border-box}body{margin:0;font-family:Inter,system-ui,sans-serif;background:#f5f4ef;color:#17201d}
+.layout{display:grid;grid-template-columns:250px 1fr;min-height:100vh}.side{background:#17201d;color:#fff;padding:24px;position:sticky;top:0;height:100vh}
+.brand{font-weight:900;letter-spacing:.14em;margin-bottom:35px}.nav button{width:100%;text-align:left;background:transparent;border:0;color:#fff;padding:13px;border-radius:9px;margin-bottom:4px;cursor:pointer}.nav button.active,.nav button:hover{background:#ffffff18}
+.main{padding:30px;max-width:1400px;width:100%;margin:auto}.top{display:flex;justify-content:space-between;align-items:center;gap:15px;flex-wrap:wrap}
+h1{font-size:clamp(2.2rem,5vw,4.2rem);margin:5px 0}.muted{opacity:.62}.key{padding:11px;border:1px solid #ccc;border-radius:9px}
+.btn{padding:11px 16px;border:0;border-radius:999px;background:#17201d;color:#fff;font-weight:700;cursor:pointer}.cards{display:grid;grid-template-columns:repeat(5,1fr);gap:12px;margin:25px 0}.card,.panel{background:#fff;border:1px solid #ddd;border-radius:17px;padding:20px}.card b{font-size:1.8rem;display:block;margin-top:5px}
+.panel{margin-top:18px}table{width:100%;border-collapse:collapse}th,td{text-align:left;padding:11px 7px;border-bottom:1px solid #eee}.status{font-size:.78rem;background:#eee;padding:5px 8px;border-radius:99px}
+input,select,textarea{font:inherit;padding:11px;border:1px solid #ccc;border-radius:8px;width:100%;margin:6px 0 14px}textarea{min-height:130px}.grid2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.section{display:none}.section.active{display:block}.sitecards{display:grid;grid-template-columns:repeat(3,1fr);gap:15px}.site{padding:25px;border-radius:16px;background:#ebe8df}.site h3{margin-top:0}.actions{display:flex;gap:9px;flex-wrap:wrap}
+#message{margin:15px 0}
+@media(max-width:900px){.layout{grid-template-columns:1fr}.side{position:relative;height:auto}.cards{grid-template-columns:1fr 1fr}.sitecards,.grid2{grid-template-columns:1fr}}
+
+.rf-admin-inline-0{overflow:auto;margin-top:15px}
+.rf-admin-inline-1{overflow:auto}
+[hidden]{display:none!important}.layout:has(#staffSide[hidden]){grid-template-columns:1fr}#staffLogin{max-width:520px;margin:2rem auto}.table-scroll{overflow:auto}.check-row{display:flex;align-items:center;gap:10px}.check-row input{width:auto;margin:0}.section td{min-width:100px;overflow-wrap:anywhere}.section td select{min-width:145px}#message{white-space:pre-line;min-height:1.5em}button:disabled{opacity:.55;cursor:wait}
+
+#appSearch{max-width:260px}td details{min-width:240px;margin-top:10px}td details summary{cursor:pointer;font-weight:600}td details dt{font-weight:600;margin-top:10px}td details dd{margin-left:0;white-space:pre-wrap}td .muted{font-size:.8rem;overflow-wrap:anywhere}

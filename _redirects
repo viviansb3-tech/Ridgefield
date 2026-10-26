@@ -1,3 +1,5 @@
+/supabase/* /404.html 404!
+/storage/* /404.html 404!
 /apply              /apply.html              200
 /admissions         /admission.html          200
 /academics          /academics.html          200

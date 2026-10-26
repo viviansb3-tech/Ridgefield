@@ -67,6 +67,10 @@ const coreSource = readSource('assets/public-core.js');
   coreCtx.RidgefieldWorkflow.showReference();
   assert.equal(outputEl.textContent, 'RF-APP-20260926-TESTREF');
   assert(wrapUnhidden, 'Expected [data-reference-wrap] to be unhidden');
+  coreCtx.location.pathname = '/application-success.html';
+  coreCtx.location.search = '?ref=RIDC202600002';
+  coreCtx.RidgefieldWorkflow.showReference();
+  assert.equal(outputEl.textContent, 'RIDC202600002', 'A direct receipt link must display its permanent number without browser storage');
 }
 
 // Test 2: Local Application Submission Flow (sendApplicationLocally)
@@ -87,6 +91,7 @@ const coreSource = readSource('assets/public-core.js');
   };
 
   const appCtx = {
+    window: {RidgefieldBaas:{enabled:true}},
     submitted: false,
     form: {
       querySelector: (sel) => sel === 'button[type="submit"]' ? mockSubmitBtn : null
@@ -124,18 +129,24 @@ const coreSource = readSource('assets/public-core.js');
     }
   };
 
+  appCtx.window.RidgefieldBaas.request = async (path, options) => {
+    assert.equal(path, '/send-application');
+    assert.equal(options.method, 'POST');
+    return {ok:true,json:async()=>({ok:true,reference:'RIDC202600002',studentNumber:'RIDC202600002'})};
+  };
   runContext(appSource.slice(submitStart, submitEnd) + '\nctx.sendApplicationLocally = sendApplicationLocally;\n', appCtx);
   await appCtx.sendApplicationLocally();
 
-  assert.equal(redirectTarget, '/application-success.html?ref=RF-APP-20260926-SUBMIT1');
-  assert.equal(sessionStorageData['rf_last_reference'], 'RF-APP-20260926-SUBMIT1');
+  assert.equal(redirectTarget, '/application-success.html?ref=RIDC202600002');
+  assert.equal(sessionStorageData['rf_last_reference'], 'RIDC202600002');
+  assert.equal(appCtx.refInput.value, 'RF-APP-20260926-SUBMIT1', 'Keep the private retry key distinct from the permanent number');
   assert.equal(sessionStorageData[storedDraftKey], undefined, 'Draft should be cleared on success');
   assert(appCtx.submitted, 'submitted flag should be true');
 
   // Test 3: Failure scenario (HTTP error)
   redirectTarget = '';
   appCtx.submitted = false;
-  appCtx.fetch = async () => ({
+  appCtx.window.RidgefieldBaas.request = async () => ({
     ok: false,
     json: async () => ({ ok: false, error: 'Server unavailable' })
   });
@@ -146,6 +157,23 @@ const coreSource = readSource('assets/public-core.js');
   assert.equal(mockSubmitBtn.disabled, false, 'Submit button should be re-enabled on failure');
   assert.equal(mockSubmitBtn.textContent, 'Send application', 'Button label should be restored');
   assert(statusMessage.includes('Server unavailable'), 'Error message should report failure reason');
+
+  // The stored reference and success URL must use the authoritative backend receipt.
+  appCtx.window.RidgefieldBaas = {
+    enabled: true,
+    request: async (path, options) => {
+      assert.equal(path, '/send-application');
+      assert.equal(options.method, 'POST');
+      return {ok: true, json: async () => ({ok: true, reference: 'RIDC202600004'})};
+    }
+  };
+  await appCtx.sendApplicationLocally();
+  assert.equal(redirectTarget, '/application-success.html?ref=RIDC202600004');
+  assert.equal(sessionStorageData['rf_last_reference'], 'RIDC202600004');
+  redirectTarget = ''; appCtx.submitted = false;
+  appCtx.window.RidgefieldBaas.request = async () => ({ok:true,json:async()=>({ok:true,reference:'RF-APP-UNCONFIRMED'})});
+  await appCtx.sendApplicationLocally();
+  assert.equal(redirectTarget, ''); assert.equal(appCtx.submitted, false);
 
   const log = typeof console !== 'undefined' && console.log ? console.log : print;
   log('PASS: admissions submission flow, reference generator, draft cleanup, and error handling.');

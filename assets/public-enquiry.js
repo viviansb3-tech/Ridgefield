@@ -98,7 +98,7 @@
   }
 
   function isLocalEnquiryMailMode(){
-    return location.hostname==="localhost" || location.hostname==="127.0.0.1";
+    return window.RidgefieldBaas?.enabled || location.hostname==="localhost" || location.hostname==="127.0.0.1";
   }
 
   async function sendEnquiryLocally(){
@@ -111,7 +111,10 @@
     setStatus("Sending your enquiry…");
     try{
       const body=new URLSearchParams(new FormData(form));
-      const response=await fetch("/api/send-enquiry",{
+      const sender=window.RidgefieldBaas?.enabled
+        ? (options)=>window.RidgefieldBaas.request("/send-enquiry",options)
+        : (options)=>fetch("/api/send-enquiry",options);
+      const response=await sender({
         method:"POST",
         body,
         headers:{
@@ -124,6 +127,7 @@
       if(!response.ok || !result.ok){
         throw new Error(result.error || "The enquiry could not be sent.");
       }
+      if(result.reference)ref.value=result.reference;
       submitted=true;
       clearDraft();
       try{sessionStorage.setItem("rf_last_reference",ref.value);sessionStorage.setItem("rf_last_enq_reference",ref.value)}catch(e){}

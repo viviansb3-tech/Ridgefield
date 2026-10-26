@@ -1,0 +1,4 @@
+project_id = "ridgefield-academy"
+[functions.ridgefield-api]
+# The handler verifies apikey for public requests and Auth JWT + staff membership for private routes.
+verify_jwt = false
