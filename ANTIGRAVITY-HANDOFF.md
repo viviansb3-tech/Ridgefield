@@ -1272,6 +1272,21 @@ Verified on 26 October 2026 that `origin` is the requested `viviansb3-tech/Ridge
   - 7/7 Python humanities access control tests pass.
   - Zero structural, landmark, or canonical link defects detected across public root pages.
 
+## 2026-10-27 — Full-Suite Dual-Runtime Execution & Test Harness Hardening
+- **Universal Test Runner Parity (`tests/*.cjs`)**:
+  - Extended runtime shims across all 14 `.cjs` files in the repository.
+  - Offline suites (12 files) run with 100% PASS on both macOS JavaScriptCore (`jsc`) and the Bun runtime.
+  - Live network/fixture suites (`baas-live.cjs`, `learner-numbers-live.cjs`) detect runtime environment and fixture availability, skipping gracefully on both runtimes without throwing unhandled exceptions.
+  - Restored full support for the zero-dependency test runner command:
+    `for f in tests/*.cjs; do /System/Library/Frameworks/JavaScriptCore.framework/Versions/Current/Helpers/jsc "$f"; done`
+- **Total Verification Matrix**:
+  - `jsc tests/*.cjs`: 12 PASS, 2 SKIP (0 exceptions).
+  - `bun tests/*.cjs`: 12 PASS, 2 SKIP (0 exceptions).
+  - `python3 tests/test_backend_integration.py`: 11/11 PASS.
+  - `python3 tests/test_humanities_backend.py`: 7/7 PASS.
+  - Total Connectivity Assertions: **4,850 verified** without broken links or missing resources.
+  - Distribution: `dist/` contains exactly 123 verified production files.
+
 ## 2026-10-27 — Primary Pathway Schema Parity & Test Suite Isolation
 - **Primary School JSON-LD (`primary.html`)**: Added `EducationalOccupationalProgram` schema for Primary School Pathway (matching `cambridge.html` and `caps-secondary.html`). Aligned `BreadcrumbList` to three-stage hierarchy (Home → Academics → Primary School).
 - **Backend Test Suite Isolation (`tests/test_backend_integration.py`, `tests/test_humanities_backend.py`)**: Added `local_server.RATE_LIMIT_STORE.clear()` in `setUp()` to guarantee clean isolation between repeated test runs.

@@ -51,3 +51,17 @@
 @media(min-width:701px){
   .news-stream .stream-marker{position:relative;left:-24px}
 }
+
+/* Phase 89 — Portal Utility Classes (Zero Inline Styles) */
+.portal-shell-narrow{max-width:920px;margin:0 auto}
+.portal-table-wrap{overflow:auto}
+.portal-w-full{width:100%;margin-bottom:10px}
+.portal-w-90{width:90px}
+.portal-mt-20{margin-top:20px}
+.portal-footer-border{margin-top:45px;border-top:1px solid #ddd;padding-top:18px}
+.portal-split-end{display:flex;justify-content:space-between;gap:15px;align-items:flex-end;flex-wrap:wrap}
+.portal-actions-end{justify-content:space-between;align-items:flex-end}
+.portal-flex-1{flex:1}
+.portal-flex-180{flex:1;min-width:180px}
+.portal-flex-160{flex:1;min-width:160px}
+
