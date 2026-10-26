@@ -1,6 +1,6 @@
 {
   "profile": "static-public-production",
-  "fileCount": 117,
+  "fileCount": 118,
   "excludedByDesign": [
     "server.js",
     "package.json",
@@ -25,13 +25,18 @@
     "deploy-manifest.json",
     "*.zip",
     "supabase/",
-    "output/"
+    "output/",
+    "dist/"
   ],
   "files": [
     "404.html",
     "_headers",
     "_redirects",
     "academics.html",
+    "admin-applications.html",
+    "admin-documents.html",
+    "admin-setup.html",
+    "admin.html",
     "admission.html",
     "application-documents.html",
     "application-success.html",
@@ -92,6 +97,11 @@
     "assets/public-core.js",
     "assets/public-enquiry.js",
     "assets/public-search.js",
+    "assets/rf-admin-setup.js",
+    "assets/rf-admin.css",
+    "assets/rf-admin.js",
+    "assets/rf-baas-config.js",
+    "assets/rf-baas.js",
     "assets/rf-nav.css",
     "assets/rf-nav.js",
     "assets/status-page.css",
@@ -113,6 +123,7 @@
     "fees.html",
     "health.json",
     "index.html",
+    "learning-platform.html",
     "meet-us.html",
     "netlify-forms.html",
     "news.html",
@@ -135,15 +146,6 @@
     "student-life.html",
     "subjects.html",
     "syllabus.html",
-    "tuition.html",
-    "admin.html",
-    "admin-setup.html",
-    "admin-applications.html",
-    "admin-documents.html",
-    "assets/rf-admin.css",
-    "assets/rf-admin.js",
-    "assets/rf-admin-setup.js",
-    "assets/rf-baas.js",
-    "assets/rf-baas-config.js"
+    "tuition.html"
   ]
 }

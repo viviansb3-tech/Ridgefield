@@ -51,5 +51,6 @@ server/uploads/*
 
 # Temporary / Output Directories
 output/
+dist/
 __pycache__/
 *.pyc

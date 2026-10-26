@@ -9,6 +9,12 @@ const PUBLIC_KEY = envKey('SUPABASE_PUBLISHABLE_KEYS', 'SUPABASE_ANON_KEY');
 const legacySecret = SECRET.startsWith('eyJ');
 const adminHeaders: Record<string,string> = { apikey: SECRET, ...(legacySecret ? { Authorization: `Bearer ${SECRET}` } : {}), 'Content-Type': 'application/json' };
 const ORIGINS = new Set(['http://localhost:8080','http://127.0.0.1:8080','https://www.ridgefieldacademy.co.za','https://ridgefieldacademy.co.za']);
+function isOriginAllowed(origin: string | null): boolean {
+  if (!origin) return false;
+  if (ORIGINS.has(origin)) return true;
+  if (/^https:\/\/[a-z0-9-]+(\.[a-z0-9-]+)*\.pages\.dev$/i.test(origin)) return true;
+  return false;
+}
 const STATUS = ['Pending','Under Review','Documents Required','Interview','Accepted','Waitlisted','Declined','Enrolled'];
 const DOC_STATUS = ['Pending','Verified','Rejected','Resubmit'];
 const PATHWAYS: Record<string,{campus:string,grades:string[]}> = {
@@ -99,10 +105,10 @@ async function documentUpload(req:Request,user:any){
 }
 export async function handler(req:Request):Promise<Response>{
  const origin=req.headers.get('origin');const headers:Record<string,string>={'Content-Type':'application/json','Cache-Control':'no-store','Vary':'Origin','Access-Control-Allow-Headers':'authorization, apikey, content-type','Access-Control-Allow-Methods':'GET, POST, PATCH, PUT, DELETE, OPTIONS'};
- if(origin&&ORIGINS.has(origin))headers['Access-Control-Allow-Origin']=origin;
+ if(origin&&isOriginAllowed(origin))headers['Access-Control-Allow-Origin']=origin;
  const response=(data:unknown,status=200)=>new Response(JSON.stringify(data),{status,headers});
  try{
-  if(origin&&!ORIGINS.has(origin))throw new ApiError(403,'Origin not allowed.');
+  if(origin&&!isOriginAllowed(origin))throw new ApiError(403,'Origin not allowed.');
   if(req.method==='OPTIONS')return new Response(null,{status:204,headers});
   const validKeys=[...Object.values(JSON.parse(Deno.env.get('SUPABASE_PUBLISHABLE_KEYS')||'{}')),Deno.env.get('SUPABASE_ANON_KEY')].filter(Boolean);
   if(!validKeys.includes(req.headers.get('apikey')||''))throw new ApiError(401,'Missing or invalid application key.');
