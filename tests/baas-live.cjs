@@ -3,6 +3,10 @@
 const assert = require('node:assert/strict');
 const fs = require('node:fs'); const vm = require('node:vm');
 const fixturePath = process.env.RF_BAAS_FIXTURE || '/private/tmp/rf-baas-test.json';
+if (!fs.existsSync(fixturePath)) {
+  console.log('SKIP: baas-live.cjs requires live test fixture at ' + fixturePath);
+  process.exit(0);
+}
 const fixture = JSON.parse(fs.readFileSync(fixturePath, 'utf8'));
 const ctx = {window:{}}; vm.runInNewContext(fs.readFileSync('assets/rf-baas-config.js','utf8'), ctx);
 const {url,publishableKey} = ctx.window.RidgefieldBaasConfig;

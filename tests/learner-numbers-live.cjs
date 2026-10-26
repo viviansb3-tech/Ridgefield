@@ -1,6 +1,10 @@
 // Requires a disposable setup capability explicitly seeded for this test, never a real administrator.
 const fs=require('node:fs'),vm=require('node:vm'),assert=require('node:assert/strict');
 const file=process.env.RF_NUMBER_QA_FIXTURE||'/private/tmp/rf-number-qa.json';
+if (!fs.existsSync(file)) {
+  console.log('SKIP: learner-numbers-live.cjs requires live test fixture at ' + file);
+  process.exit(0);
+}
 const f=JSON.parse(fs.readFileSync(file,'utf8')),ctx={window:{}};vm.runInNewContext(fs.readFileSync('assets/rf-baas-config.js','utf8'),ctx);
 const c=ctx.window.RidgefieldBaasConfig;const base=c.url+'/functions/v1/ridgefield-api';let token;
 async function call(path,method='GET',body,auth=false){const r=await fetch(base+path,{method,headers:{apikey:c.publishableKey,...(body?{'Content-Type':'application/json'}:{}),...(auth?{Authorization:'Bearer '+token}:{})},body:body?JSON.stringify(body):undefined,signal:AbortSignal.timeout(30000)});return {status:r.status,data:await r.json()};}

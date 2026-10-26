@@ -1257,3 +1257,9 @@ Verified on 26 October 2026 that `origin` is the requested `viviansb3-tech/Ridge
   - `python3 tests/test_humanities_backend.py`: 7/7 tests PASS.
   - Site Connectivity: **4,850 assertions verified** with zero broken internal links, assets, or missing landmarks across all 53 HTML files.
 - **Production Asset Manifest**: `deploy-manifest.json` verified with exactly 123 production files (including `connection-map.html`, `learning-platform.html`, and their dedicated assets); zero missing files, and all private databases and test files remain strictly excluded by design.
+
+## 2026-10-27 — Primary Pathway Schema Parity & Test Suite Isolation
+- **Primary School JSON-LD (`primary.html`)**: Added `EducationalOccupationalProgram` schema for Primary School Pathway (matching `cambridge.html` and `caps-secondary.html`). Aligned `BreadcrumbList` to three-stage hierarchy (Home → Academics → Primary School).
+- **Backend Test Suite Isolation (`tests/test_backend_integration.py`, `tests/test_humanities_backend.py`)**: Added `local_server.RATE_LIMIT_STORE.clear()` in `setUp()` to guarantee clean isolation between repeated test runs.
+- **Verification**: All 12 offline JavaScript suites PASS (JSC & Bun), both Python test suites PASS, and `site-connectivity.cjs` validates 4,850 assertions green.
+
