@@ -29,4 +29,6 @@ input,select,textarea{font:inherit;padding:11px;border:1px solid #ccc;border-rad
 .rf-platform-services .panel a{align-self:flex-start;margin-top:auto}
 .rf-platform-services .status{align-self:flex-start}
 .rf-platform-services li{margin:10px 0}
+.rf-platform-footer{margin-top:48px;padding-top:24px;border-top:1px solid #d4cebe;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:16px;font-size:0.9rem;color:#495a51}
+.rf-platform-footer a{color:inherit;text-decoration:underline}
 
