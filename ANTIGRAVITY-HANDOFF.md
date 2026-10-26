@@ -1241,3 +1241,9 @@ Sources: `supabase/learner-numbers.sql` (incremental migration), updated fresh-p
 # GitHub sharing between computers
 
 Verified on 26 October 2026 that `origin` is the requested `viviansb3-tech/Ridgefield` GitHub repository and the local `main` matches `origin/main`. Added the root README with cloning, pull-before-edit, commit/push-before-switching, local preview and shared-backend instructions. Credentials and local private storage remain excluded. GitHub code synchronization is distinct from website and Supabase deployment.
+
+## 2026-10-26 — Hyperlinked connection map and page skeletons
+- connection-map.html maps public forms, all implemented admin tabs, mathematics, humanities, legacy portals and Cloudflare. Nodes open operation details and actual frontend links; no data-mutating endpoint is executed by map selection. Mathematics local preview and account bridge remain explicitly pending.
+- Linked map from learning-platform.html and admin.html. Source mapping from current frontends, Ridgefield API and notebook local-school route. No auth/data permissions changed.
+- Shared page-loading.js/css on all 53 HTML pages, including humanities. Delayed 150ms skeleton, DOM-ready removal, history cleanup, 5-second fail-safe and reduced-motion support. It covers document loading, not every later API request. Notebook repository loading states remain owned by its chat.
+- Connectivity: 4,850 assertions passed. Loading lifecycle tests passed; browser verified admin filter and document-node drilldown. Local preview started on 8080. No production deployment.

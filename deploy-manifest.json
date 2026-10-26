@@ -1,6 +1,6 @@
 {
   "profile": "static-public-production",
-  "fileCount": 118,
+  "fileCount": 123,
   "excludedByDesign": [
     "server.js",
     "package.json",
@@ -44,6 +44,8 @@
     "assets/2026.png",
     "assets/2027.png",
     "assets/asset-integration.css",
+    "assets/connection-map.css",
+    "assets/connection-map.js",
     "assets/contact-page.css",
     "assets/css/style.css",
     "assets/dynamic-site.css",
@@ -81,6 +83,8 @@
     "assets/js/main.js",
     "assets/logos/Logo no text.png",
     "assets/logos/Ridgefield White.png",
+    "assets/page-loading.css",
+    "assets/page-loading.js",
     "assets/pathway-complete.css",
     "assets/pathway-conversion.css",
     "assets/phase35.css",
@@ -115,6 +119,7 @@
     "caps-secondary.html",
     "caps-subjects.html",
     "caps-team.html",
+    "connection-map.html",
     "contact.html",
     "data/search-index.json",
     "directions.html",
