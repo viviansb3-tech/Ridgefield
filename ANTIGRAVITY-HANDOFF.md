@@ -1304,4 +1304,26 @@ Verified on 26 October 2026 that `origin` is the requested `viviansb3-tech/Ridge
 - **Staff Leadership Consistency**: Verified matching roles and campus designations for Dr. Elizabeth van der Westhuizen (Head of Academics & Cambridge Coordinator), Rev. J. van der Westhuizen (Principal & Pastoral Care), and Mrs. Linda Maree (Admissions & Academic Administration) across `staff.html`, `caps-team.html`, and `primary-team.html`.
 - **Validation**: 12/12 JS test suites PASS, Python tests PASS, and 4,850 connectivity assertions green.
 
+## 2026-10-27 — Agent 9: Privacy (POPIA), Security & Form Infrastructure Audit
+- **POPIA Compliance & Data Protection (`privacy.html`)**:
+  - Verified comprehensive statutory alignment with the South African Protection of Personal Information Act (POPIA, Act 4 of 2013).
+  - Confirmed explicit disclosures for public admissions enquiries, learner identification, guardian contact data, and the strict design principle excluding sensitive document uploads from public web forms.
+  - Verified post-application enrolment disclosure detailing lawful collection of student academic records, emergency medical data, parent/guardian identity documentation, and clinic immunisation cards via dedicated secure channels.
+- **Content Security Policy & Header Hardening (`_headers`)**:
+  - Confirmed production CSP enforcement: `default-src 'self'`, `base-uri 'self'`, `object-src 'none'`, `form-action 'self'`, `script-src 'self'`, `style-src 'self'`, and `connect-src 'self' https://cgknuthrxnyfxncvmelo.supabase.co`.
+  - Conducted automated audit verifying zero inline `style="..."` attributes, zero inline `<script>` tags, and zero inline event handler attributes across all production HTML files in `deploy-manifest.json`.
+  - Audited security response headers: `X-Frame-Options: DENY`, `X-Content-Type-Options: nosniff`, `Referrer-Policy: strict-origin-when-cross-origin`, `Strict-Transport-Security: max-age=31536000`, `Cross-Origin-Opener-Policy: same-origin`, and restrictive `Permissions-Policy`.
+  - Confirmed `Cache-Control: no-store` and `X-Robots-Tag: noindex, nofollow` headers on all sensitive administrative, health, status, and success endpoints.
+- **Form Infrastructure & Netlify Edge Parity (`netlify-forms.html`, `apply.html`, `contact.html`)**:
+  - Validated 100% exact field parity between client-side interactive forms and edge pre-rendering declarations in `netlify-forms.html` for both `ridgefield-application` (37 fields) and `ridgefield-enquiry` (12 fields).
+  - Verified anti-bot honeypot configuration (`netlify-honeypot="bot-field"`), honeypot input presence, and mandatory `privacy-consent` checkboxes gating submission.
+- **Edge Routing & Directory Shielding (`_redirects`)**:
+  - Confirmed active 404 blocking rules for private backend and database paths (`/supabase/*` and `/storage/*`).
+  - Confirmed clean rewrite definitions for core school pathways and newly added administration / learning / connection map endpoints.
+- **Distribution & Verification Matrix**:
+  - Re-synced production distribution via `python3 scripts/build_dist.py` (123 files verified).
+  - Executed full test suite: 12 PASS, 2 SKIP (0 errors) on `jsc tests/*.cjs`; 18/18 PASS on Python backend suites (`test_backend_integration.py`, `test_humanities_backend.py`).
+  - Verified 4,850 connectivity assertions without a single broken link or missing asset.
+
+
 
