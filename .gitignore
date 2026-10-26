@@ -4,6 +4,8 @@ Thumbs.db
 *.swp
 *.swo
 *~
+* [0-9].*
+* 2.*
 
 # Environment & Sensitive Files (CRITICAL: Never commit .env or API keys)
 .env
