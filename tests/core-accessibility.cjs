@@ -269,6 +269,23 @@ function runAccessibilityPass(domControls) {
     assert(!/style\s*=\s*["\x27]/i.test(js), `Found disallowed inline style= attribute in ${jsFile}`);
   }
 
+  // 6. Application, portal, and administration pages accessibility audit
+  const portalFiles = [
+    "admin.html", "admin-setup.html", "admin-applications.html", "admin-documents.html",
+    "connection-map.html", "learning-platform.html", "parent-portal.html",
+    "progress-analytics.html", "report-card.html", "student-portal.html", "teacher-portal.html"
+  ];
+  for (const file of portalFiles) {
+    const content = readFileContent(file);
+    assert(content.includes("<main") || content.includes('id="main-content"'), `Missing <main> landmark in ${file}`);
+    assert(!/\bstyle\s*=\s*["\x27]/i.test(content), `Found disallowed inline style attribute in ${file}`);
+    const imgMatches = content.match(/<img\b[^>]*>/gi) || [];
+    for (const img of imgMatches) {
+      assert(/\balt\s*=/i.test(img), `Image missing alt attribute in ${file}: ${img}`);
+      verifiedImages++;
+    }
+  }
+
   const log = typeof console !== 'undefined' && console.log ? console.log : print;
-  log(`PASS: site-wide WCAG 2.1 AA audit (${verifiedLandmarks} landmarks, ${verifiedImages} images with alt, ${verifiedSvgs} accessible SVGs, FAQ accordions verified, and zero inline style attributes in scripts).`);
+  log(`PASS: site-wide WCAG 2.1 AA audit (${verifiedLandmarks} brochure landmarks, 11 portal landmarks, ${verifiedImages} images with alt, ${verifiedSvgs} accessible SVGs, FAQ accordions verified, and zero inline style attributes across all 52 pages).`);
 })();

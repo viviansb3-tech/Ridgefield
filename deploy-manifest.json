@@ -1,6 +1,6 @@
 {
   "profile": "static-public-production",
-  "fileCount": 123,
+  "fileCount": 124,
   "excludedByDesign": [
     "server.js",
     "package.json",
@@ -81,6 +81,7 @@
     "assets/images/6312.webp",
     "assets/images/ridgefield-community-modern.jpg",
     "assets/js/main.js",
+    "assets/local-notebook.js",
     "assets/logos/Logo no text.png",
     "assets/logos/Ridgefield White.png",
     "assets/page-loading.css",

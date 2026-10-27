@@ -1325,5 +1325,31 @@ Verified on 26 October 2026 that `origin` is the requested `viviansb3-tech/Ridge
   - Executed full test suite: 12 PASS, 2 SKIP (0 errors) on `jsc tests/*.cjs`; 18/18 PASS on Python backend suites (`test_backend_integration.py`, `test_humanities_backend.py`).
   - Verified 4,850 connectivity assertions without a single broken link or missing asset.
 
+## 2026-10-27 — Site-Wide WCAG 2.1 AA Accessibility & Portal Landmark Audit
+- **52-Page Semantic Structure Audit**:
+  - Validated 100% presence of `<html lang="en">`, `<meta name="viewport">`, and clean `<title>` tags across all 52 HTML files.
+  - Resolved heading hierarchy issues in `progress-analytics.html`, `student-portal.html`, and `teacher-portal.html` by standardizing secondary dashboard headers to `<h2>`, establishing a single, authoritative `<h1>` per page.
+  - Added semantic `<main id="main-content">` landmark wrapper to `report-card.html`.
+- **Form Controls & ARIA Accessibility**:
+  - Connected implicit and explicit labels across `student-portal.html`, `teacher-portal.html`, and `admin.html` (e.g. `for="email"`, `for="password"`, `for="student"`, `for="subject"`, `for="score"`, `for="maxScore"`, `for="term"`, `for="year"`).
+  - Added descriptive `aria-label` attributes to unlabeled interactive controls: `appFilter` in `admin.html`, attendance controls in `teacher-portal.html`, and filter controls in `report-card.html`.
+- **Zero Inline Styles Enforcement**:
+  - Replaced remaining inline styles in `report-card.html` and `teacher-portal.html` with utility classes (`portal-w-90`, `portal-mt-20`, `portal-footer-border`, `portal-actions-end`, `portal-flex-180`, `portal-flex-160`, `portal-flex-1`, `portal-table-wrap`) defined in `assets/phase53-complete.css`.
+  - Whole-codebase audit verifies exactly zero `style="..."` attributes exist in any HTML file.
+- **Automated Accessibility Test Suite (`tests/core-accessibility.cjs`)**:
+  - Upgraded test harness to explicitly audit all 11 application, portal, and administration pages alongside the 41 brochure pages (40 brochure landmarks, 11 portal landmarks, 177 images with `alt`, 81 accessible SVGs, interactive FAQ accordions, and zero inline styles).
+  - Verified 100% PASS on both macOS JavaScriptCore (`jsc`) and Bun engines.
+- **Verification Matrix**:
+  - 12/12 JS offline test suites PASS.
+  - 18/18 Python unit & integration tests PASS.
+  - 4,850 connectivity assertions green.
+  - Distribution build: 123 production files packaged to `dist/`.
 
 
+
+
+## 2026-10-27 — Local notebook navigation verified
+- Started school preview on 8080 and existing notebook dev server on loopback 36424. Notebook /local-school returned 200; school hub → notebook /ridgefield/login verified in browser with actual sign-in form.
+- Added assets/local-notebook.js and hub links for school entry, sign-in, portal, access admin, records and subjects. Links activate only on loopback school hosts. Updated connection map with local navigation and explicit separate-account limitation.
+- 4,851 connectivity checks passed. No new accounts, role grants, record sync or deployment. Authenticated acceptance remains pending; this connects navigation, not shared authentication/data.
+- Notebook installed runtime reports Next 15.1.7 despite package declaration 15.1.12; dependencies were not altered. Coordinate any dependency repair with notebook owner.
