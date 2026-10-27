@@ -14,13 +14,14 @@ input,select,textarea{font:inherit;padding:11px;border:1px solid #ccc;border-rad
 .rf-admin-inline-0{overflow:auto;margin-top:15px}
 .rf-admin-inline-1{overflow:auto}
 [hidden]{display:none!important}.layout:has(#staffSide[hidden]){grid-template-columns:1fr}#staffLogin{max-width:520px;margin:2rem auto}.table-scroll{overflow:auto}.check-row{display:flex;align-items:center;gap:10px}.check-row input{width:auto;margin:0}.section td{min-width:100px;overflow-wrap:anywhere}.section td select{min-width:145px}#message{white-space:pre-line;min-height:1.5em}button:disabled{opacity:.55;cursor:wait}
+.wrap-anywhere{overflow-wrap:anywhere}
 
 #appSearch{max-width:260px}td details{min-width:240px;margin-top:10px}td details summary{cursor:pointer;font-weight:600}td details dt{font-weight:600;margin-top:10px}td details dd{margin-left:0;white-space:pre-wrap}td .muted{font-size:.8rem;overflow-wrap:anywhere}
 
 /* Learning Platform Hub */
 .rf-platform-main{max-width:1200px;margin:auto;padding:clamp(20px,5vw,64px)}
 .rf-platform-header{display:flex;justify-content:space-between;align-items:center;gap:20px;flex-wrap:wrap}
-.rf-platform-header img{width:190px}
+.rf-platform-header img{display:block;width:190px;height:auto;max-width:100%;object-fit:contain}
 .rf-platform-intro{max-width:740px;margin:48px 0 32px;line-height:1.6}
 .rf-platform-services{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,300px),1fr));gap:20px}
 .rf-platform-services .panel{margin:0;display:flex;flex-direction:column;gap:12px}
@@ -31,4 +32,3 @@ input,select,textarea{font:inherit;padding:11px;border:1px solid #ccc;border-rad
 .rf-platform-services li{margin:10px 0}
 .rf-platform-footer{margin-top:48px;padding-top:24px;border-top:1px solid #d4cebe;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:16px;font-size:0.9rem;color:#495a51}
 .rf-platform-footer a{color:inherit;text-decoration:underline}
-

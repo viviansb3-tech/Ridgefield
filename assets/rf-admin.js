@@ -110,16 +110,70 @@
       })); body.append(row);
     }
   }
-  const loaders = { dashboard: summary, applications, enquiries, students, content, documents: documentApplications };
+  async function portalAccess() {
+    const [{ teachers }, { students: studentRecords }, { assignments }] = await Promise.all([
+      request('/admin/teachers'), request('/admin/students'), request('/admin/assignments')
+    ]);
+    const teacherRows = byId('teacherRows'); teacherRows.replaceChildren();
+    if (!teachers.length) empty(teacherRows, 7, 'No teacher registrations yet.');
+    for (const teacher of teachers) {
+      const row = node('tr'); cell(row, teacher.first_name + ' ' + teacher.last_name); cell(row, teacher.email);
+      cell(row, teacher.pathway); cell(row, teacher.campus);
+      cell(row, Array.isArray(teacher.subjects_json) ? teacher.subjects_json.join(', ') : '');
+      cell(row, teacher.status); const actions = cell(row);
+      if (teacher.status === 'Pending') {
+        actions.append(button('Approve', async () => {
+          await request('/admin/teachers/' + encodeURIComponent(teacher.user_id), json('PATCH', { status: 'Active' }));
+          message('Teacher approved. Assign students and subjects before they can enter learner records.'); await portalAccess();
+        }));
+        actions.append(button('Reject', async () => {
+          await request('/admin/teachers/' + encodeURIComponent(teacher.user_id), json('PATCH', { status: 'Rejected' }));
+          message('Teacher registration rejected.'); await portalAccess();
+        }));
+      }
+      teacherRows.append(row);
+    }
+
+    const activeTeachers = teachers.filter(teacher => teacher.status === 'Active');
+    const teacherSelect = byId('assignTeacher'); teacherSelect.replaceChildren();
+    for (const teacher of activeTeachers) {
+      const option = node('option', teacher.first_name + ' ' + teacher.last_name + ' — ' + teacher.email);
+      option.value = teacher.user_id; teacherSelect.append(option);
+    }
+    const studentSelect = byId('assignStudent'); studentSelect.replaceChildren();
+    for (const student of studentRecords.filter(record => record.status === 'Active')) {
+      const label = student.student_ref + ' — ' + student.first_name + ' ' + student.last_name;
+      const option = node('option', label); option.value = student.id; studentSelect.append(option);
+    }
+    byId('addAssignment').disabled = !activeTeachers.length || !studentSelect.options.length;
+
+    const teacherById = new Map(teachers.map(teacher => [teacher.user_id, teacher]));
+    const studentById = new Map(studentRecords.map(student => [student.id, student]));
+    const assignmentRows = byId('assignmentRows'); assignmentRows.replaceChildren();
+    if (!assignments.length) empty(assignmentRows, 3, 'No teacher assignments yet.');
+    for (const assignment of assignments) {
+      const row = node('tr');
+      const teacher = teacherById.get(assignment.teacher_id);
+      const student = studentById.get(assignment.student_id);
+      cell(row, teacher ? teacher.first_name + ' ' + teacher.last_name : 'Teacher');
+      cell(row, student ? student.student_ref + ' — ' + student.first_name + ' ' + student.last_name : 'Student');
+      cell(row, assignment.subject); assignmentRows.append(row);
+    }
+  }
+  const loaders = { dashboard: summary, applications, enquiries, students, content, documents: documentApplications, access: portalAccess };
   async function showSection(id) {
     if (!B?.hasSession()) return;
     if (!byId(id)?.classList.contains('section')) id = 'dashboard';
+    if (id === 'access' && byId('accessNav').hidden) id = 'dashboard';
     document.querySelectorAll('.section').forEach(e => { e.classList.toggle('active', e.id === id); });
     document.querySelectorAll('[data-section]').forEach(e => e.classList.toggle('active', e.dataset.section === id));
     if (loaders[id]) await loaders[id]();
   }
   async function enter() {
-    await request('/me'); byId('staffLogin').hidden = true; byId('staffWorkspace').hidden = false; byId('staffSide').hidden = false; byId('staffLogout').hidden = false;
+    const profile = await request('/me');
+    if (!['admin', 'admissions'].includes(profile.role)) throw new Error('This account does not have staff portal access.');
+    byId('accessNav').hidden = profile.role !== 'admin'; byId('access').hidden = profile.role !== 'admin';
+    byId('staffLogin').hidden = true; byId('staffWorkspace').hidden = false; byId('staffSide').hidden = false; byId('staffLogout').hidden = false;
     message('Signed in.'); await showSection(location.hash.slice(1) || 'dashboard');
   }
   byId('staffLoginForm').addEventListener('submit', event => {
@@ -139,6 +193,29 @@
   byId('addStudent').addEventListener('click', event => busy(event.currentTarget, async () => {
     await request('/admin/students', json('POST', { firstName: byId('sf').value, lastName: byId('sl').value, grade: byId('sg').value, pathway: byId('sp').value, campus: byId('sc').value, parentEmail: byId('se').value }));
     message('Learner added.'); await students();
+  }));
+  byId('createTestStudent').addEventListener('click', event => busy(event.currentTarget, async () => {
+    const { student } = await request('/admin/students/tester', { method: 'POST' });
+    byId('testerId').value = student.id;
+    byId('testerDetails').textContent = 'Synthetic learner ready: ' + student.firstName + ' ' + student.lastName + ' · ' + student.studentRef;
+    byId('issueStudentInvite').disabled = false;
+    byId('studentInvite').textContent = '';
+    message('Synthetic test learner is ready.'); await Promise.all([students(), portalAccess()]);
+  }));
+  byId('issueStudentInvite').addEventListener('click', event => busy(event.currentTarget, async () => {
+    const studentId = byId('testerId').value; const emailAddress = byId('testerEmail').value.trim();
+    if (!studentId || !emailAddress) throw new Error('Create the test learner and enter the tester’s email first.');
+    const result = await request('/admin/students/' + encodeURIComponent(studentId) + '/invite', json('POST', { email: emailAddress }));
+    const link = new URL('student-portal.html', location.href); link.hash = 'invite=' + result.token;
+    byId('studentInvite').textContent = 'Send this one-time link to ' + result.email + '. It expires ' + new Date(result.expiresAt).toLocaleString() + ': ' + link.href;
+    message('Student activation link created. Share it privately with the tester.');
+  }));
+  byId('addAssignment').addEventListener('click', event => busy(event.currentTarget, async () => {
+    const teacherId = byId('assignTeacher').value; const studentId = byId('assignStudent').value;
+    const subject = byId('assignSubject').value.trim();
+    if (!teacherId || !studentId || !subject) throw new Error('Choose a teacher, learner and registered subject.');
+    await request('/admin/assignments', json('POST', { teacherId, studentId, subject }));
+    byId('assignSubject').value = ''; message('Teacher assignment saved.'); await portalAccess();
   }));
   byId('saveContent').addEventListener('click', event => busy(event.currentTarget, async () => {
     const key = byId('ckey').value.trim(); if (!/^[a-z0-9_-]+$/.test(key)) throw new Error('Use letters, numbers and hyphens for the section key.');

@@ -22,7 +22,10 @@ const PATHWAYS: Record<string,{campus:string,grades:string[]}> = {
  'CAPS Secondary':{campus:'22 Maartens Street',grades:['Grade 8','Grade 9','Grade 10','Grade 11','Grade 12 (consultation required)']},
  Primary:{campus:'22 Maartens Street',grades:['Grade 1','Grade 2','Grade 3','Grade 4','Grade 5','Grade 6','Grade 7']}
 };
-class ApiError extends Error { constructor(public status:number,message:string){super(message);} }
+class ApiError extends Error {
+ status:number;
+ constructor(status:number,message:string){super(message);this.status=status;}
+}
 async function backend(path:string, options:RequestInit={}) {
  const response=await fetch(SB_URL+path,{...options,headers:{...adminHeaders,...options.headers}});
  const value=await response.json().catch(()=>null);
@@ -53,6 +56,25 @@ async function currentUser(req:Request){
 async function staff(req:Request,adminOnly=false){
  const user=await currentUser(req);const rows=await db('rf_staff?user_id=eq.'+user.id+'&active=eq.true&select=role');
  if(!rows.length||(adminOnly&&rows[0].role!=='admin'))throw new ApiError(403,'Your account does not have access to this area.');return user;
+}
+async function activeTeacher(req:Request){
+ const user=await currentUser(req);const rows=await db('rf_teacher_accounts?user_id=eq.'+user.id+'&select=user_id,email,first_name,last_name,campus,pathway,subjects_json,status');
+ if(!rows.length||rows[0].status!=='Active')throw new ApiError(403,'Teacher portal access is awaiting administrator approval.');
+ return {user,teacher:rows[0]};
+}
+function subjects(value:unknown){
+ if(!Array.isArray(value)||value.length<1||value.length>20)throw new ApiError(400,'Enter between 1 and 20 subjects.');
+ const result=[...new Set(value.map((x:unknown)=>required(x,100)))];
+ if(result.length!==value.length)throw new ApiError(400,'Remove duplicate subjects.');
+ return result;
+}
+function isoDate(value:unknown){
+ const date=required(value,10);
+ if(!/^\d{4}-\d{2}-\d{2}$/.test(date)||Number.isNaN(Date.parse(date))||new Date(date).toISOString().slice(0,10)!==date)throw new ApiError(400,'Enter a valid date.');
+ return date;
+}
+function randomToken(){
+ return Array.from(crypto.getRandomValues(new Uint8Array(32)),b=>b.toString(16).padStart(2,'0')).join('');
 }
 async function audit(userId:string,action:string,targetId?:string){await insert('rf_audit',{actor_id:userId,action,target_id:targetId||null});}
 async function rate(req:Request){
@@ -129,8 +151,153 @@ export async function handler(req:Request):Promise<Response>{
    await audit(created.id,'administrator.setup');
    return response({ok:true,email:matches[0].email});
   }
+  if(route==='/student/activate'&&method==='POST'){
+   await rate(req);const b=await readBody(req,8192);const token=required(b.token,64);if(!/^[a-f0-9]{64}$/.test(token))throw new ApiError(400,'This student invitation is invalid or expired.');
+   const inviteEmail=email(b.email);const password=b.password;if(typeof password!=='string'||password.length<12||password.length>128)throw new ApiError(400,'Use a password between 12 and 128 characters.');
+   const claimId=crypto.randomUUID();const claims=await db('rpc/rf_claim_student_invite',{method:'POST',body:JSON.stringify({p_token_digest:await digest(token),p_email:inviteEmail,p_claim_id:claimId})});
+   if(!claims?.length)throw new ApiError(403,'This student invitation is invalid, expired or already used.');
+   let createdId:string|undefined;
+   try{
+    const result=await backend('/auth/v1/admin/users',{method:'POST',body:JSON.stringify({email:inviteEmail,password,email_confirm:true,user_metadata:{portal:'student'}})});
+    const created=result.user||result;createdId=uuid(created.id);
+    await db('rpc/rf_finalize_student_invite',{method:'POST',body:JSON.stringify({p_invite_id:claims[0].invite_id,p_claim_id:claimId,p_user_id:createdId})});
+   }catch(error){
+    if(createdId){
+     try{await backend('/auth/v1/admin/users/'+createdId,{method:'DELETE'});}
+     catch(cleanupError){console.error('Student invite account cleanup failed',cleanupError instanceof Error?cleanupError.name:'unknown');}
+    }
+    await db('rpc/rf_release_student_invite',{method:'POST',body:JSON.stringify({p_invite_id:claims[0].invite_id,p_claim_id:claimId})});
+    throw error;
+   }
+   if(!createdId)throw new ApiError(500,'Student account activation could not be completed.');
+   await audit(createdId,'student.invite.activate',claims[0].student_id);
+   return response({ok:true,email:inviteEmail});
+  }
+  if(route==='/teacher/register'&&method==='POST'){
+   await rate(req);const user=await currentUser(req);const b=await readBody(req);
+   if(!user.email)throw new ApiError(400,'A verified email address is required.');
+   const pathway=required(b.pathway,40);const pathwayInfo=PATHWAYS[pathway];if(!pathwayInfo)throw new ApiError(400,'Choose a valid teaching pathway.');
+   const campus=required(b.campus,120);if(campus!==pathwayInfo.campus)throw new ApiError(400,'Choose the campus assigned to this pathway.');
+   const submitted=subjects(b.subjects);const result=await db('rpc/rf_submit_teacher_registration',{method:'POST',body:JSON.stringify({
+    p_user_id:user.id,p_email:email(user.email),p_first_name:required(b.firstName,100),p_last_name:required(b.lastName,100),
+    p_campus:campus,p_pathway:pathway,p_subjects:submitted
+   })});
+   const status=typeof result==='string'?result:result?.[0];
+   if(status==='Active')return response({ok:true,status:'Active',message:'Your teacher account is already approved.'});
+   await audit(user.id,'teacher.register');
+   return response({ok:true,status:'Pending',message:'Your registration was sent to an administrator for approval.'});
+  }
+  if(route==='/me'&&method==='GET'){
+   const user=await currentUser(req);
+   const [staffRows,teacherRows,learnerRows]=await Promise.all([
+    db('rf_staff?user_id=eq.'+user.id+'&active=eq.true&select=role'),
+    db('rf_teacher_accounts?user_id=eq.'+user.id+'&select=status,email,first_name,last_name,campus,pathway,subjects_json'),
+    db('rf_learner_access?user_id=eq.'+user.id+'&relationship=eq.student&select=student_id')
+   ]);
+   if(staffRows.length)return response({ok:true,user:{id:user.id,email:user.email},role:staffRows[0].role,status:'Active'});
+   if(teacherRows.length)return response({ok:true,user:{id:user.id,email:user.email},role:'teacher',...teacherRows[0]});
+   if(learnerRows.length)return response({ok:true,user:{id:user.id,email:user.email},role:'student',status:'Active'});
+   const registration=user.user_metadata?.teacher_application;
+   return response({ok:true,user:{id:user.id,email:user.email},role:'unregistered',status:'Unregistered',registration:registration&&typeof registration==='object'?registration:null});
+  }
+  if(route==='/teacher/dashboard'&&method==='GET'){
+   const {user,teacher}=await activeTeacher(req);
+   const assignments=await db('rf_teacher_assignments?teacher_id=eq.'+user.id+'&select=student_id,subject&order=subject,student_id');
+   if(!assignments.length)return response({ok:true,teacher,assignments:[],records:[],attendance:[]});
+   const ids=[...new Set(assignments.map((x:any)=>uuid(x.student_id)))];const filter='in.('+ids.join(',')+')';
+   const [students,records,attendance]=await Promise.all([
+    db('rf_students?id='+filter+'&select=id,student_ref,first_name,last_name,grade,pathway,campus,status&order=last_name,first_name'),
+    db('rf_academic_records?student_id='+filter+'&select=id,student_id,subject,assessment,score,max_score,term,academic_year,comment,created_at&order=created_at.desc&limit=250'),
+    db('rf_attendance?student_id='+filter+'&select=student_id,attendance_date,status,note&order=attendance_date.desc&limit=250')
+   ]);
+   return response({ok:true,teacher,assignments:assignments.map((x:any)=>({...x,student:students.find((s:any)=>s.id===x.student_id)||null})),records,attendance});
+  }
+  if(route==='/teacher/records'&&method==='POST'){
+   const {user}=await activeTeacher(req);const b=await readBody(req);const studentId=uuid(required(b.studentId,36));const subject=required(b.subject,100);
+   const assigned=await db('rf_teacher_assignments?teacher_id=eq.'+user.id+'&student_id=eq.'+studentId+'&select=subject');
+   if(!assigned.some((x:any)=>x.subject===subject))throw new ApiError(403,'You may only publish records for a learner and subject assigned to you.');
+   const hasScore=b.score!==''&&b.score!==null&&b.score!==undefined;const hasMax=b.maxScore!==''&&b.maxScore!==null&&b.maxScore!==undefined;
+   if(hasScore&&typeof b.score!=='number'&&typeof b.score!=='string'||hasMax&&typeof b.maxScore!=='number'&&typeof b.maxScore!=='string')throw new ApiError(400,'Enter a valid score and maximum score.');
+   const score=hasScore?Number(b.score):null;const maxScore=hasMax?Number(b.maxScore):null;
+   if((score===null)!==(maxScore===null)||score!==null&&(!Number.isFinite(score)||!Number.isFinite(maxScore)||score<0||maxScore<=0||score>maxScore))throw new ApiError(400,'Enter a valid score and maximum score.');
+   const academicYear=b.academicYear===''||b.academicYear===null||b.academicYear===undefined?null:Number(b.academicYear);
+   if(academicYear!==null&&(!Number.isInteger(academicYear)||academicYear<1900||academicYear>2200))throw new ApiError(400,'Enter a valid academic year.');
+   await insert('rf_academic_records',{student_id:studentId,subject,assessment:required(b.assessment,150),score,max_score:maxScore,term:text(b.term||'',80)||null,academic_year:academicYear,comment:text(b.comment||'',2000)||null});
+   await audit(user.id,'teacher.record.create',studentId);
+   return response({ok:true});
+  }
+  if(route==='/teacher/attendance'&&method==='POST'){
+   const {user}=await activeTeacher(req);const b=await readBody(req);const studentId=uuid(required(b.studentId,36));const date=isoDate(b.date);const status=required(b.status,20);
+   if(!['Present','Absent','Late','Excused'].includes(status))throw new ApiError(400,'Choose a valid attendance status.');
+   const assigned=await db('rf_teacher_assignments?teacher_id=eq.'+user.id+'&student_id=eq.'+studentId+'&select=student_id&limit=1');
+   if(!assigned.length)throw new ApiError(403,'You may only update attendance for a learner assigned to you.');
+   await db('rf_attendance?on_conflict=student_id,attendance_date',{method:'POST',headers:{Prefer:'resolution=merge-duplicates,return=representation'},body:JSON.stringify({student_id:studentId,attendance_date:date,status,note:text(b.note||'',500)||null})});
+   await audit(user.id,'teacher.attendance.save',studentId);
+   return response({ok:true});
+  }
+  if(route==='/student/dashboard'&&method==='GET'){
+   const user=await currentUser(req);const links=await db('rf_learner_access?user_id=eq.'+user.id+'&relationship=eq.student&select=student_id');
+   if(!links.length)throw new ApiError(403,'This account is not linked to an active student record.');
+   const studentIds=[...new Set(links.map((x:any)=>uuid(x.student_id)))];const filter='in.('+studentIds.join(',')+')';
+   const [students,records,attendance]=await Promise.all([
+    db('rf_students?id='+filter+'&select=id,student_ref,first_name,last_name,grade,pathway,campus,status'),
+    db('rf_academic_records?student_id='+filter+'&select=id,student_id,subject,assessment,score,max_score,term,academic_year,comment,created_at&order=created_at.desc&limit=250'),
+    db('rf_attendance?student_id='+filter+'&select=student_id,attendance_date,status,note&order=attendance_date.desc&limit=250')
+   ]);
+   return response({ok:true,students,records,attendance});
+  }
   const user=await staff(req); // Every route below requires a server-verified active staff account.
-  if(route==='/me'&&method==='GET')return response({ok:true,user:{id:user.id,email:user.email}});
+  if(route==='/admin/teachers'&&method==='GET'){
+   await staff(req,true);const status=url.searchParams.get('status');if(status&&!['Pending','Active','Rejected'].includes(status))throw new ApiError(400,'Invalid teacher status.');
+   return response({ok:true,teachers:await db('rf_teacher_accounts?select=user_id,email,first_name,last_name,campus,pathway,subjects_json,status,created_at&order=created_at.desc&limit=500'+(status?'&status=eq.'+status:''))});
+  }
+  const teacherReview=route.match(/^\/admin\/teachers\/([0-9a-f-]+)$/);
+  if(teacherReview&&method==='PATCH'){
+   await staff(req,true);const teacherId=uuid(teacherReview[1]);const b=await readBody(req);
+   if(!['Active','Rejected'].includes(b.status))throw new ApiError(400,'Choose approval or rejection.');
+   const rows=await db('rf_teacher_accounts?user_id=eq.'+teacherId,{method:'PATCH',headers:{Prefer:'return=representation'},body:JSON.stringify({status:b.status,updated_at:new Date().toISOString()})});
+   if(!rows.length)throw new ApiError(404,'Teacher registration not found.');
+   await audit(user.id,'teacher.'+b.status.toLowerCase(),teacherId);
+   return response({ok:true,status:b.status});
+  }
+  if(route==='/admin/assignments'&&method==='GET'){
+   await staff(req,true);return response({ok:true,assignments:await db('rf_teacher_assignments?select=teacher_id,student_id,subject,created_at&order=created_at.desc&limit=1000')});
+  }
+  if(route==='/admin/assignments'&&method==='POST'){
+   await staff(req,true);const b=await readBody(req);const teacherId=uuid(required(b.teacherId,36));const studentId=uuid(required(b.studentId,36));const subject=required(b.subject,100);
+   const [teachers,students]=await Promise.all([
+    db('rf_teacher_accounts?user_id=eq.'+teacherId+'&status=eq.Active&select=user_id,subjects_json'),
+    db('rf_students?id=eq.'+studentId+'&status=eq.Active&select=id')
+   ]);
+   if(!teachers.length)throw new ApiError(404,'An approved teacher is required.');
+   if(!students.length)throw new ApiError(404,'An active student is required.');
+   const teacherSubjects=Array.isArray(teachers[0].subjects_json)?teachers[0].subjects_json:[];
+   if(!teacherSubjects.includes(subject))throw new ApiError(400,'Choose a subject listed on the teacher registration.');
+   const rows=await insert('rf_teacher_assignments',{teacher_id:teacherId,student_id:studentId,subject,created_by:user.id});
+   await audit(user.id,'teacher.assignment.create',rows[0].student_id);
+   return response({ok:true});
+  }
+  if(route==='/admin/students/tester'&&method==='POST'){
+   await staff(req,true);let student=(await db('rf_students?is_test_fixture=eq.true&select=id,student_ref,first_name,last_name,grade,pathway,campus,status&limit=1'))[0];
+   if(!student){
+    const rows=await insert('rf_students',{first_name:'Fictional',last_name:'Test Learner',grade:'IGCSE (Grades 9–10)',pathway:'Cambridge',campus:PATHWAYS.Cambridge.campus,status:'Active',is_test_fixture:true});
+    student=rows[0];
+   }
+   await audit(user.id,'student.test_fixture.create',student.id);
+   return response({ok:true,student:{id:student.id,studentRef:student.student_ref,firstName:student.first_name,lastName:student.last_name}});
+  }
+  const studentInvite=route.match(/^\/admin\/students\/([0-9a-f-]+)\/invite$/);
+  if(studentInvite&&method==='POST'){
+   await staff(req,true);const studentId=uuid(studentInvite[1]);const b=await readBody(req);const inviteEmail=email(b.email);
+   const students=await db('rf_students?id=eq.'+studentId+'&status=eq.Active&select=id');if(!students.length)throw new ApiError(404,'An active student is required.');
+   const existingAccess=await db('rf_learner_access?student_id=eq.'+studentId+'&relationship=eq.student&select=user_id');
+   if(existingAccess.length)throw new ApiError(409,'This student already has an account.');
+   const token=randomToken();const expiresAt=new Date(Date.now()+24*60*60*1000).toISOString();
+   await db('rf_student_invites?student_id=eq.'+studentId+'&consumed_at=is.null&revoked_at=is.null',{method:'PATCH',body:JSON.stringify({revoked_at:new Date().toISOString()})});
+   await insert('rf_student_invites',{student_id:studentId,email:inviteEmail,token_digest:await digest(token),expires_at:expiresAt,created_by:user.id});
+   await audit(user.id,'student.invite.create',studentId);
+   return response({ok:true,email:inviteEmail,token,expiresAt});
+  }
   if(route==='/admin/summary'&&method==='GET'){
    const [apps,students]=await Promise.all([db('rf_applications?select=status'),db('rf_students?select=id')]);
    return response({applications:apps.length,pending:apps.filter((x:any)=>x.status==='Pending').length,review:apps.filter((x:any)=>x.status==='Under Review').length,accepted:apps.filter((x:any)=>x.status==='Accepted').length,students:students.length});

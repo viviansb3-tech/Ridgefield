@@ -1,6 +1,6 @@
 {
   "profile": "static-public-production",
-  "fileCount": 124,
+  "fileCount": 130,
   "excludedByDesign": [
     "server.js",
     "package.json",
@@ -26,7 +26,11 @@
     "*.zip",
     "supabase/",
     "output/",
-    "dist/"
+    "dist/",
+    "cambridge9709*/",
+    "vercel.json",
+    "firebase.json",
+    "Ridgelearn/"
   ],
   "files": [
     "404.html",
@@ -109,6 +113,10 @@
     "assets/rf-baas.js",
     "assets/rf-nav.css",
     "assets/rf-nav.js",
+    "assets/rf-student-portal.css",
+    "assets/rf-student-portal.js",
+    "assets/rf-teacher-portal.css",
+    "assets/rf-teacher-portal.js",
     "assets/status-page.css",
     "assets/status-page.js",
     "book-lists.html",
@@ -150,8 +158,10 @@
     "status.html",
     "story.html",
     "student-life.html",
+    "student-portal.html",
     "subjects.html",
     "syllabus.html",
+    "teacher-portal.html",
     "tuition.html"
   ]
 }

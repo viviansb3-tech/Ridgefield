@@ -17,13 +17,24 @@
     } catch { /* An in-memory session still works if browser storage is blocked. */ }
     window.dispatchEvent(new Event('ridgefield-auth-change'));
   }
-  async function authRequest(path, body) {
+  function restoreAuthCallback() {
+    if (typeof location === 'undefined' || typeof history === 'undefined' || !location.hash) return;
+    const values = new URLSearchParams(location.hash.slice(1));
+    const accessToken = values.get('access_token');
+    const refreshToken = values.get('refresh_token');
+    if (!accessToken || !refreshToken) return;
+    const expiresIn = Number(values.get('expires_in') || 3600);
+    const expiresAt = Number(values.get('expires_at')) || Math.floor(Date.now() / 1000) + expiresIn;
+    saveSession({ access_token: accessToken, refresh_token: refreshToken, expires_at: expiresAt });
+    history.replaceState(null, '', location.pathname + location.search);
+  }
+  async function authRequest(path, body, failureMessage = 'Sign-in failed. Check your details and try again.') {
     const response = await fetch(config.url + '/auth/v1/' + path, {
       method: 'POST', headers: { apikey: config.publishableKey, 'Content-Type': 'application/json' },
       body: JSON.stringify(body), signal: AbortSignal.timeout(20000)
     });
     const result = await response.json().catch(() => ({}));
-    if (!response.ok) throw new Error('Sign-in failed. Check your details and try again.');
+    if (!response.ok) throw new Error(failureMessage);
     return result;
   }
   async function accessToken() {
@@ -67,6 +78,18 @@
     catch (error) { saveSession(null); throw error; }
     return value.user;
   }
+  async function signUp(email, password, metadata = {}, redirectTo = location.href) {
+    if (typeof password !== 'string' || password.length < 12 || password.length > 128) {
+      throw new Error('Use a password between 12 and 128 characters.');
+    }
+    const redirect = encodeURIComponent(redirectTo);
+    const value = await authRequest('signup?redirect_to=' + redirect, {
+      email: email.trim(), password, data: metadata
+    }, 'The account could not be created. Check the email and try again.');
+    const nextSession = value.session || (value.access_token ? value : null);
+    saveSession(nextSession);
+    return value.user || value;
+  }
   async function signOut() {
     try {
       const token = await accessToken();
@@ -76,5 +99,6 @@
       });
     } finally { saveSession(null); }
   }
-  window.RidgefieldBaas = Object.freeze({ enabled: true, request, api, signIn, signOut, hasSession: () => !!session()?.access_token });
+  restoreAuthCallback();
+  window.RidgefieldBaas = Object.freeze({ enabled: true, request, api, signIn, signUp, signOut, hasSession: () => !!session()?.access_token });
 })();

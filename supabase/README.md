@@ -16,6 +16,20 @@ A 24-hour, one-time setup capability has been prepared for the user-specified ad
 
 To create a fresh setup capability, generate a cryptographically random token, insert its digest and the intended email into `rf_bootstrap` through an administrator connection, and give only the intended owner the `/admin-setup.html#TOKEN` URL. Do not bypass Auth by inserting password records directly into `auth.users`.
 
+## Teacher and student portal accounts
+
+The portal account upgrade is implemented in the repository but is **not yet deployed to Supabase**. For the existing project, apply `portal-accounts.sql` once in the Supabase SQL editor, then deploy the updated `ridgefield-api` Edge Function. Do not apply the full `schema.sql` to the existing project.
+
+- Teachers can request accounts from `teacher-portal.html`. Supabase Auth email confirmation is required; the registration remains pending until an administrator approves it in **Admin → Portal access**. Approval alone does not grant access to learner records: the administrator must also assign the teacher specific learners and subjects.
+- Teacher reads and writes go through the Edge Function. Each record and attendance write is checked against the active teacher's assignment. Browser clients receive no direct table privileges for teacher profiles, assignments or invitations.
+- Student registration is invitation-only. In **Admin → Portal access**, an administrator can create or reuse the clearly labelled fictional test learner, enter the tester's email, and issue a single-use link that expires after 24 hours. Share that link privately; it contains the one-time activation token. The student chooses their own password (12–128 characters). The token is stored only as a digest, and only one student login can be linked to a student record.
+- Student sessions are read-only and the API returns only records linked to that authenticated student. A learner number is not an authentication credential.
+- Administrator accounts remain separately provisioned through the one-time setup capability above. Teacher self-registration cannot assign staff roles or administrator privileges.
+
+Before enabling teacher registration in production, enable email signups, require email confirmation, set the minimum password length to 12, and allow the deployed teacher portal URL as an email redirect destination. Keep the Supabase service-role/secret key only in Edge Function secrets. Do not put activation tokens or test credentials in Git, logs, or handoff documents.
+
+The local fictional tester is a record template, not a live account. The test record and account are created only after an administrator uses the portal-access controls on the deployed version. No account or real learner data has been provisioned by this source change.
+
 ## Source and deployment
 
 `schema.sql` is the fresh-project schema snapshot. The cloud DDL was applied through the connected Supabase migration tools; the provider retains the migration history. Do not reapply this snapshot to the existing project. The `ridgefield-api` function is deployed, and `functions/ridgefield-api/index.ts` is its source. Functions authenticate the `apikey` header themselves and verify user JWTs on private routes, so the function configuration intentionally sets `verify_jwt = false`.
@@ -36,7 +50,7 @@ Browser visual verification was blocked by the browser URL policy. UI bindings a
 
 ## Remaining service boundaries
 
-Existing PHP parent/teacher portals, the student portal and the separate humanities service retain their existing backend paths. Their data was not automatically migrated. The learner, family-access, attendance and academic tables provide a protected foundation for a separate portal migration. No existing records, identities or private files were imported. The UI does not offer public registration. Supabase Auth may retain its default signup setting; a newly registered account still has no staff membership or linked learner access. No staff role is assigned from user-editable metadata.
+The parent/guardian portal and separate humanities service retain their existing backend paths; their data was not automatically migrated. The repository's student and teacher pages now use the Supabase account APIs described above, but this change remains local until the additive SQL migration and Edge Function are deployed. No existing records, identities or private files were imported. Unapproved teacher accounts and unlinked Auth users cannot access private portal data.
 
 Production operation still needs the owner to configure backups/restore procedures, retention, any email delivery service, and operational account management. A signature check is not an antivirus scan; only authorised staff can upload and a dedicated file-scanning service was not provisioned.
 

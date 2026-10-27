@@ -93,6 +93,9 @@ const source = readFileContent('assets/rf-baas.js');
       if (url.includes('grant_type=password')) {
         return ResponseMock.json({ access_token: 'access', refresh_token: 'refresh', expires_at: Math.floor(Date.now() / 1000) + 3600 });
       }
+      if (url.includes('/auth/v1/signup?')) {
+        return ResponseMock.json({ user: { id: 'teacher-id', email: 'teacher@example.com', user_metadata: JSON.parse(options.body).data } });
+      }
       if (url.includes('grant_type=refresh_token')) {
         refreshes++;
         await new Promise(r => setTimeout(r, 10));
@@ -124,6 +127,31 @@ const source = readFileContent('assets/rf-baas.js');
   await B.request('/me', { authenticated: true });
   assert(!B.hasSession());
   await assert.rejects(B.request('//malicious.example'), /Invalid service path/);
+  const application = { firstName: 'Synthetic', lastName: 'Teacher', pathway: 'Cambridge' };
+  const user = await B.signUp(' teacher@example.com ', 'a sufficiently long password', { teacher_application: application }, 'https://ridgefieldacademy.co.za/teacher-portal.html');
+  assert.equal(user.email, 'teacher@example.com');
+  const signup = requests[requests.length - 1];
+  assert(signup.url.includes('redirect_to=https%3A%2F%2Fridgefieldacademy.co.za%2Fteacher-portal.html'));
+  assert.equal(JSON.parse(signup.options.body).password, 'a sufficiently long password');
+  assert.equal(JSON.parse(signup.options.body).data.teacher_application.firstName, 'Synthetic');
+  assert(!B.hasSession(), 'An email-unconfirmed signup must not create a browser session.');
+  const callbackStore = new Map();
+  let replacedUrl = '';
+  const callbackContext = {
+    ...context,
+    sessionStorage: {
+      getItem: key => callbackStore.get(key) || null,
+      setItem: (key, value) => callbackStore.set(key, String(value)),
+      removeItem: key => callbackStore.delete(key)
+    },
+    location: { hash: '#access_token=callback-access&refresh_token=callback-refresh&expires_in=3600', pathname: '/teacher-portal.html', search: '' },
+    history: { replaceState: (_state, _title, url) => { replacedUrl = url; } },
+    URLSearchParams,
+    window: { ...context.window, dispatchEvent: () => {} }
+  };
+  runVm(source, callbackContext);
+  assert(callbackContext.window.RidgefieldBaas.hasSession(), 'A confirmed email callback must restore its session.');
+  assert.equal(replacedUrl, '/teacher-portal.html', 'The auth token fragment must be removed from browser history.');
   log('PASS: authenticated requests, public requests, preserved passwords, concurrent refresh and expired-session clearing');
 })().catch(e => {
   const errLog = typeof print !== 'undefined' ? print : console.error;
